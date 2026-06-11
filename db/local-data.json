@@ -1,0 +1,268 @@
+{
+  "users": [
+    {
+      "id": "fd40764e-fa37-4833-b5d7-1526e776b831",
+      "created_at": "2026-06-11T16:09:34.509Z",
+      "updated_at": "2026-06-11T16:09:34.509Z",
+      "email": "admin@niahealth.com",
+      "name": "Nia Admin",
+      "password_hash": "$2a$12$BidmUYcLOV1h/vKXJq19s.6pc3UIf2vNZYCtqY8UpKSlQ6ul/ZtUy",
+      "is_admin": true,
+      "plan": "free",
+      "goals": [],
+      "symptoms": [],
+      "cycle_length": 28,
+      "period_length": 5
+    },
+    {
+      "id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "created_at": "2026-06-11T16:09:35.247Z",
+      "updated_at": "2026-06-11T16:09:35.295Z",
+      "email": "demo@niahealth.com",
+      "name": "Demo User",
+      "password_hash": "$2a$12$z58VKEqHNj5qJSpEUWZ4y.wjY5FJT0Fia7o2COS2NPUgakWjWnOqG",
+      "is_admin": false,
+      "plan": "free",
+      "goals": [
+        "Manage PCOS",
+        "Improve energy",
+        "Understand my cycle"
+      ],
+      "symptoms": [
+        "Bloating",
+        "Acne",
+        "Mood swings"
+      ],
+      "cycle_length": 28,
+      "period_length": 5,
+      "age": 29,
+      "country": "Kenya",
+      "last_period_date": "2026-06-03"
+    },
+    {
+      "id": "10ebeb63-2ef9-4d8e-a23c-89d260a18244",
+      "created_at": "2026-06-11T16:32:12.712Z",
+      "updated_at": "2026-06-11T16:32:31.980Z",
+      "email": "admin@nia.com",
+      "name": "admin",
+      "password_hash": "$2a$12$9DScuc/hkBRGsigGZKgwwuPn84lWPZRPz7k1p/2ajLOrENKxRVWyO",
+      "is_admin": false,
+      "plan": "free",
+      "goals": [
+        "Manage PCOS",
+        "Regulate cycle",
+        "Better sleep"
+      ],
+      "symptoms": [
+        "Brain fog"
+      ],
+      "cycle_length": 28,
+      "period_length": 5
+    }
+  ],
+  "cycle_logs": [
+    {
+      "id": "81d1393a-ef8f-4d38-8a15-d3fed22554d8",
+      "created_at": "2026-06-11T16:09:35.293Z",
+      "updated_at": "2026-06-11T16:09:35.293Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "start_date": "2026-06-03",
+      "notes": "Demo period log"
+    }
+  ],
+  "daily_logs": [
+    {
+      "id": "ad824b77-5fb5-495b-936b-7762b34eee12",
+      "created_at": "2026-06-11T16:09:35.309Z",
+      "updated_at": "2026-06-11T16:09:35.309Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "log_type": "mood",
+      "value": "Calm",
+      "numeric_value": null,
+      "notes": "Seeded demo mood",
+      "logged_at": "2026-06-11T16:09:35.309Z"
+    },
+    {
+      "id": "9c665f88-0075-40c6-8057-1f7da07eab7b",
+      "created_at": "2026-06-11T16:09:35.324Z",
+      "updated_at": "2026-06-11T16:09:35.324Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "log_type": "water",
+      "value": null,
+      "numeric_value": 7,
+      "notes": "Seeded demo water",
+      "logged_at": "2026-06-11T16:09:35.324Z"
+    },
+    {
+      "id": "1a7b53d3-6984-47b9-9146-61854db254b5",
+      "created_at": "2026-06-11T16:09:35.357Z",
+      "updated_at": "2026-06-11T16:09:35.357Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "log_type": "sleep_hours",
+      "value": null,
+      "numeric_value": 7.5,
+      "notes": "Seeded demo sleep",
+      "logged_at": "2026-06-11T16:09:35.357Z"
+    }
+  ],
+  "wellness_scores": [
+    {
+      "id": "630ac8b4-4308-42f8-a07a-c499081ebba4",
+      "created_at": "2026-06-11T16:13:53.347Z",
+      "updated_at": "2026-06-11T16:22:24.593Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "score": 61,
+      "scored_on": "2026-06-11"
+    },
+    {
+      "id": "1abb4277-ef97-4bf2-8427-30056c4a0fb7",
+      "created_at": "2026-06-11T16:32:32.280Z",
+      "updated_at": "2026-06-11T16:40:01.118Z",
+      "user_id": "10ebeb63-2ef9-4d8e-a23c-89d260a18244",
+      "score": 50,
+      "scored_on": "2026-06-11"
+    }
+  ],
+  "posts": [
+    {
+      "id": "7acc0a04-7c31-4518-aff7-1bdc88f9c915",
+      "created_at": "2026-06-11T16:09:35.386Z",
+      "updated_at": "2026-06-11T16:09:35.405Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "content": "This is a demo community post so you can test moderation and the community feed locally.",
+      "tag": "General",
+      "is_anonymous": false,
+      "status": "approved",
+      "likes_count": 0,
+      "comments_count": 0,
+      "reports_count": 0
+    }
+  ],
+  "post_likes": [],
+  "post_reports": [],
+  "comments": [],
+  "chat_sessions": [
+    {
+      "id": "0abba3f3-9a41-440f-b111-f9d251781a7a",
+      "created_at": "2026-06-11T16:09:35.420Z",
+      "updated_at": "2026-06-11T16:09:35.429Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "title": "Give me one simple wellness tip for today."
+    },
+    {
+      "id": "ecb78ed7-0d4a-4690-a787-56c7c34bb0de",
+      "created_at": "2026-06-11T16:14:31.254Z",
+      "updated_at": "2026-06-11T16:14:31.262Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "title": "Why is my period late?"
+    },
+    {
+      "id": "4c9c1a1f-0246-4cbd-af2b-a1b784929d2f",
+      "created_at": "2026-06-11T16:18:08.651Z",
+      "updated_at": "2026-06-11T16:18:08.662Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "title": "hu"
+    }
+  ],
+  "chat_messages": [
+    {
+      "id": "cdaa4cdf-982f-4135-afc6-005464f88f74",
+      "created_at": "2026-06-11T16:09:35.424Z",
+      "updated_at": "2026-06-11T16:09:35.424Z",
+      "session_id": "0abba3f3-9a41-440f-b111-f9d251781a7a",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "role": "user",
+      "content": "Give me one simple wellness tip for today."
+    },
+    {
+      "id": "841342c3-2541-4f85-bcec-76524645f6c9",
+      "created_at": "2026-06-11T16:09:35.426Z",
+      "updated_at": "2026-06-11T16:09:35.426Z",
+      "session_id": "0abba3f3-9a41-440f-b111-f9d251781a7a",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "role": "assistant",
+      "content": "Hi Demo User! 🌿 I'm Nia, your hormonal health companion. I'm running in demo mode — all your data saves and every feature works, I just give placeholder responses until you add your Anthropic API key to .env.local.\n\nCurrent phase: **Follicular**. Log your last period in Cycle Tracker to unlock phase insights!\n\n💡 Go to Daily Log and track your mood — your wellness score updates in real time."
+    },
+    {
+      "id": "dc72846e-0be3-4a64-a59f-217aa189d6a0",
+      "created_at": "2026-06-11T16:14:31.257Z",
+      "updated_at": "2026-06-11T16:14:31.257Z",
+      "session_id": "ecb78ed7-0d4a-4690-a787-56c7c34bb0de",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "role": "user",
+      "content": "Why is my period late?"
+    },
+    {
+      "id": "751cb940-1c88-4316-806b-1cb2cdb54285",
+      "created_at": "2026-06-11T16:14:31.259Z",
+      "updated_at": "2026-06-11T16:14:31.260Z",
+      "session_id": "ecb78ed7-0d4a-4690-a787-56c7c34bb0de",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "role": "assistant",
+      "content": "Thanks for testing, Demo User! 💚 Demo mode response here. The real Nia will give personalised answers based on your cycle phase, symptoms, and health history once your API key is added.\n\nIn the meantime everything else is fully live — log symptoms, track your cycle, browse meal plans, and check the supplement guide.\n\n💡 Check the Supplements tab — tick off what you've taken today and it logs to your health record."
+    },
+    {
+      "id": "4c732faf-e232-46d9-b9de-e68666973099",
+      "created_at": "2026-06-11T16:18:08.655Z",
+      "updated_at": "2026-06-11T16:18:08.655Z",
+      "session_id": "4c9c1a1f-0246-4cbd-af2b-a1b784929d2f",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "role": "user",
+      "content": "hu"
+    },
+    {
+      "id": "7ab6b6b1-d420-485a-a0b3-d243ccc68970",
+      "created_at": "2026-06-11T16:18:08.659Z",
+      "updated_at": "2026-06-11T16:18:08.659Z",
+      "session_id": "4c9c1a1f-0246-4cbd-af2b-a1b784929d2f",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "role": "assistant",
+      "content": "Great question! 🌸 Demo mode can't give a personalised answer, but here's a real tip: the highest-impact habits for hormonal health are consistent cycle tracking, an anti-inflammatory diet, and the supplement stack in your Supplements tab (especially Inositol + Magnesium for PCOS).\n\n💡 Test the admin panel — scroll to the footer, click the small 'admin' link, and sign in with your admin account."
+    }
+  ],
+  "notifications": [
+    {
+      "id": "597a08e6-0386-401d-bd97-62f94733612a",
+      "created_at": "2026-06-11T16:09:34.513Z",
+      "updated_at": "2026-06-11T16:09:34.513Z",
+      "user_id": "fd40764e-fa37-4833-b5d7-1526e776b831",
+      "title": "🌿 Welcome to niA Health!",
+      "body": "Hi Nia Admin, your wellness journey starts today. Let's build your health profile.",
+      "type": "welcome",
+      "is_read": false
+    },
+    {
+      "id": "cc2965a9-6226-4b38-b833-4d3d321df215",
+      "created_at": "2026-06-11T16:09:35.249Z",
+      "updated_at": "2026-06-11T16:09:35.249Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "title": "🌿 Welcome to niA Health!",
+      "body": "Hi Demo User, your wellness journey starts today. Let's build your health profile.",
+      "type": "welcome",
+      "is_read": false
+    },
+    {
+      "id": "7ee6bb18-56a0-4ffc-933a-7c17943800c2",
+      "created_at": "2026-06-11T16:32:12.715Z",
+      "updated_at": "2026-06-11T16:32:12.715Z",
+      "user_id": "10ebeb63-2ef9-4d8e-a23c-89d260a18244",
+      "title": "🌿 Welcome to niA Health!",
+      "body": "Hi admin, your wellness journey starts today. Let's build your health profile.",
+      "type": "welcome",
+      "is_read": false
+    }
+  ],
+  "broadcasts": [],
+  "supplement_logs": [
+    {
+      "id": "e0a556d3-7cde-40b1-809a-b6e3b6988573",
+      "created_at": "2026-06-11T16:09:35.372Z",
+      "updated_at": "2026-06-11T16:09:35.372Z",
+      "user_id": "37e5c4c8-bb5a-4b8e-b042-47d76ec93d21",
+      "supplement_name": "Magnesium",
+      "dose": "200 mg",
+      "logged_on": "2026-06-11",
+      "taken_at": "2026-06-11T16:09:35.372Z"
+    }
+  ]
+}
