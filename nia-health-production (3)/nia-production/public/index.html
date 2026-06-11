@@ -1,0 +1,1744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>niA Health</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --gd:#2A5A1A;--gm:#4A8A2E;--gs:#7DBE57;--gl:#C2DFB0;--gp:#E8F4DF;--gg:#F2F8EE;
+  --cr:#FAF9F5;--wh:#fff;--tx:#1A2F12;--tm:#3D5A2E;--tmu:#7A9A6A;
+  --bd:rgba(74,138,46,0.14);--bdd:rgba(0,0,0,0.07);
+  --co:#E05A3A;--cp:#FEF0EC;--bl:#4A7BC4;--bp:#E8F0FA;
+  --pu:#7C5CBF;--lv:#EEE8F8;--yl:#D4860A;--ylp:#FEF6E8;
+  --sid:#15270D;--err:#C0392B;
+}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'DM Sans',sans-serif;background:var(--cr);color:var(--tx);-webkit-font-smoothing:antialiased;}
+#root{height:100%;}
+button,input,textarea,select{font-family:inherit;}
+a{color:inherit;text-decoration:none;}
+
+/* LAYOUT */
+.layout{display:flex;height:100vh;overflow:hidden;}
+.sidebar{width:235px;min-width:235px;background:var(--sid);display:flex;flex-direction:column;height:100%;transition:width .25s;}
+.sidebar.slim{width:62px;min-width:62px;}
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:.8rem 1.75rem;background:var(--wh);border-bottom:1px solid var(--bdd);flex-shrink:0;}
+.content-area{flex:1;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--gl) transparent;}
+.content-area::-webkit-scrollbar{width:4px;}
+.content-area::-webkit-scrollbar-thumb{background:var(--gl);border-radius:2px;}
+.pg{padding:1.75rem 2rem;}
+
+/* SIDEBAR */
+.sb-top{padding:1.2rem 1.1rem .9rem;border-bottom:1px solid rgba(255,255,255,.06);}
+.sb-logo-row{display:flex;align-items:center;gap:9px;margin-bottom:4px;}
+.sb-collapse-btn{width:26px;height:26px;border-radius:7px;background:rgba(255,255,255,.06);border:none;color:rgba(255,255,255,.4);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.85rem;margin-left:auto;flex-shrink:0;}
+.sb-collapse-btn:hover{background:rgba(255,255,255,.1);color:rgba(255,255,255,.8);}
+.sb-admin-badge{display:inline-block;background:rgba(224,90,58,.2);color:#E05A3A;border-radius:4px;padding:1px 7px;font-size:.58rem;font-weight:600;margin-top:4px;}
+.sb-nav{flex:1;overflow-y:auto;padding:.5rem 0;scrollbar-width:none;}
+.sb-nav::-webkit-scrollbar{display:none;}
+.sb-section{font-size:.53rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.2);padding:.65rem 1.1rem .25rem;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:.55rem 1.1rem;cursor:pointer;transition:background .15s;position:relative;white-space:nowrap;overflow:hidden;}
+.sb-item:hover{background:rgba(255,255,255,.05);}
+.sb-item.active{background:rgba(125,190,87,.13);}
+.sb-item.active::before{content:'';position:absolute;left:0;top:50%;transform:translateY(-50%);height:55%;width:3px;background:var(--gs);border-radius:0 2px 2px 0;}
+.sb-ico{font-size:1rem;width:20px;text-align:center;flex-shrink:0;}
+.sb-lbl{font-size:.8rem;color:rgba(255,255,255,.58);transition:opacity .2s;}
+.sb-item.active .sb-lbl{color:rgba(255,255,255,.95);font-weight:500;}
+.sidebar.slim .sb-lbl,.sidebar.slim .sb-section{opacity:0;pointer-events:none;width:0;}
+.sb-foot{padding:.75rem 1.1rem;border-top:1px solid rgba(255,255,255,.06);}
+.sb-user-row{display:flex;align-items:center;gap:9px;}
+.sb-av{width:30px;height:30px;border-radius:50%;background:var(--gd);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:#fff;flex-shrink:0;}
+.sb-uname{font-size:.78rem;color:rgba(255,255,255,.8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.sb-urole{font-size:.6rem;color:rgba(255,255,255,.35);white-space:nowrap;}
+
+/* TOPBAR */
+.tb-left h2{font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:var(--tx);}
+.tb-left p{font-size:.7rem;color:var(--tmu);}
+.tb-right{display:flex;align-items:center;gap:.65rem;}
+.tb-score{display:flex;align-items:center;gap:7px;background:var(--gp);border:1px solid var(--gl);border-radius:50px;padding:5px 14px;cursor:pointer;}
+.tb-score-n{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--gd);}
+.tb-score-l{font-size:.68rem;color:var(--tm);}
+.tb-icon{width:34px;height:34px;border-radius:50%;background:var(--gg);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.9rem;position:relative;transition:background .2s;}
+.tb-icon:hover{background:var(--gp);}
+.notif-badge{position:absolute;top:5px;right:5px;width:7px;height:7px;background:var(--co);border-radius:50%;border:1.5px solid var(--wh);}
+
+/* CARDS */
+.card{background:var(--wh);border-radius:18px;border:1px solid var(--bdd);padding:1.35rem;}
+.card-sm{background:var(--wh);border-radius:14px;border:1px solid var(--bdd);padding:1rem;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;}
+.card-title{font-size:.88rem;font-weight:600;color:var(--tx);}
+.card-action{font-size:.72rem;color:var(--gd);cursor:pointer;font-weight:500;}
+.card-action:hover{text-decoration:underline;}
+
+/* GRIDS */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1rem;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:.9rem;}
+
+/* STAT CARDS */
+.stat-card{background:var(--wh);border-radius:16px;border:1px solid var(--bdd);padding:1.1rem;}
+.sc-ico{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;margin-bottom:.65rem;}
+.sc-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--tx);line-height:1;}
+.sc-lbl{font-size:.68rem;color:var(--tmu);margin-top:3px;}
+.sc-delta{font-size:.65rem;font-weight:500;margin-top:5px;}
+.up{color:var(--gs);}.dn{color:var(--co);}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:none;cursor:pointer;font-family:'DM Sans',sans-serif;font-weight:500;border-radius:50px;transition:all .18s;font-size:.875rem;}
+.btn-g{background:var(--gd);color:#fff;padding:11px 22px;}
+.btn-g:hover{background:var(--gm);}
+.btn-g:disabled{background:var(--gl);cursor:not-allowed;}
+.btn-o{background:transparent;color:var(--gd);border:1.5px solid var(--bd);padding:10px 20px;}
+.btn-o:hover{background:var(--gp);}
+.btn-sm{padding:7px 16px;font-size:.8rem;}
+.btn-xs{padding:5px 12px;font-size:.72rem;}
+.btn-danger{background:var(--err);color:#fff;padding:9px 18px;}
+.btn-danger:hover{background:#a93226;}
+
+/* FORMS */
+.f-group{margin-bottom:.85rem;}
+.f-label{display:block;font-size:.69rem;font-weight:600;color:var(--tm);margin-bottom:.38rem;text-transform:uppercase;letter-spacing:.07em;}
+.f-in{width:100%;padding:10px 13px;border:1.5px solid var(--bdd);border-radius:11px;font-size:.875rem;color:var(--tx);background:var(--gg);outline:none;transition:border-color .2s;}
+.f-in:focus{border-color:var(--gs);background:var(--wh);}
+.f-in.err-field{border-color:var(--co);}
+.f-ta{width:100%;padding:10px 13px;border:1.5px solid var(--bdd);border-radius:11px;font-size:.875rem;color:var(--tx);background:var(--gg);outline:none;resize:vertical;transition:border-color .2s;}
+.f-ta:focus{border-color:var(--gs);}
+.f-sel{width:100%;padding:10px 13px;border:1.5px solid var(--bdd);border-radius:11px;font-size:.875rem;color:var(--tx);background:var(--gg);outline:none;}
+.f-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem;}
+.chips-wrap{display:flex;flex-wrap:wrap;gap:7px;}
+.chip{padding:6px 13px;border-radius:50px;border:1.5px solid var(--bd);font-size:.77rem;cursor:pointer;background:var(--wh);color:var(--tm);transition:all .18s;user-select:none;}
+.chip.on{background:var(--gd);color:#fff;border-color:var(--gd);}
+
+/* TAGS */
+.tag{display:inline-block;border-radius:50px;padding:2px 9px;font-size:.63rem;font-weight:500;}
+.tg{background:var(--gp);color:var(--gd);}
+.tb2{background:var(--bp);color:var(--bl);}
+.tr{background:var(--cp);color:var(--co);}
+.tp{background:var(--lv);color:var(--pu);}
+.ty{background:var(--ylp);color:var(--yl);}
+
+/* ALERTS */
+.alert{border-radius:12px;padding:.75rem 1rem;margin-bottom:1rem;font-size:.82rem;display:flex;align-items:flex-start;gap:9px;}
+.alert-success{background:var(--gp);border:1px solid var(--gl);color:var(--gd);}
+.alert-error{background:var(--cp);border:1px solid rgba(224,90,58,.3);color:var(--err);}
+.alert-info{background:var(--bp);border:1px solid rgba(74,123,196,.2);color:var(--bl);}
+
+/* LOADING */
+.spinner{display:inline-block;width:20px;height:20px;border:2.5px solid var(--gl);border-top-color:var(--gd);border-radius:50%;animation:spin .7s linear infinite;}
+.spinner-lg{width:36px;height:36px;border-width:3px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.skeleton{background:linear-gradient(90deg,var(--gg) 25%,var(--gp) 50%,var(--gg) 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px;}
+@keyframes shimmer{0%{background-position:200% 0;}100%{background-position:-200% 0;}}
+.loading-center{display:flex;align-items:center;justify-content:center;padding:3rem;flex-direction:column;gap:.75rem;color:var(--tmu);font-size:.85rem;}
+
+/* EMPTY STATES */
+.empty-state{text-align:center;padding:2.5rem 1rem;}
+.empty-icon{font-size:2.5rem;display:block;margin-bottom:.75rem;}
+.empty-title{font-size:.92rem;font-weight:600;color:var(--tx);margin-bottom:.35rem;}
+.empty-sub{font-size:.8rem;color:var(--tmu);line-height:1.6;max-width:300px;margin:0 auto .9rem;}
+
+/* WELLNESS RING */
+.wellness-panel{background:linear-gradient(135deg,var(--gg),var(--gp));border-radius:18px;border:1px solid var(--bd);padding:1.4rem;display:flex;align-items:center;gap:1.75rem;}
+.wp-lbl{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:var(--tmu);margin-bottom:.25rem;}
+.wp-num{font-family:'Cormorant Garamond',serif;font-size:3.8rem;font-weight:600;color:var(--tx);line-height:1;}
+.wp-up{font-size:.72rem;color:var(--gs);margin-top:.25rem;}
+.wp-btn{display:inline-flex;align-items:center;gap:6px;background:var(--gd);color:#fff;border-radius:50px;padding:8px 18px;font-size:.78rem;font-weight:500;margin-top:.8rem;cursor:pointer;border:none;}
+.ring{position:relative;width:100px;height:100px;flex-shrink:0;}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg);}
+.ring-in{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:1.6rem;}
+
+/* PHASE BANNER */
+.phase-banner{border-radius:16px;padding:1.1rem 1.3rem;color:#fff;display:flex;align-items:center;gap:1rem;margin-bottom:1.1rem;}
+.pb-ico{font-size:1.6rem;flex-shrink:0;}
+.pb-phase{font-size:.6rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.58);margin-bottom:2px;}
+.pb-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;}
+.pb-desc{font-size:.76rem;color:rgba(255,255,255,.72);line-height:1.5;max-width:460px;}
+.pb-right{margin-left:auto;text-align:right;flex-shrink:0;}
+.pb-day-n{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;line-height:1;}
+.pb-day-l{font-size:.58rem;color:rgba(255,255,255,.55);}
+
+/* PLAN LIST */
+.plan-item{display:flex;align-items:center;gap:11px;padding:.8rem 0;border-bottom:1px solid var(--bdd);}
+.plan-item:last-child{border-bottom:none;}
+.pi-ico{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0;}
+.pi-name{font-size:.84rem;font-weight:500;color:var(--tx);}
+.pi-sub{font-size:.7rem;color:var(--tmu);margin-top:1px;}
+.pi-chk{margin-left:auto;width:25px;height:25px;border-radius:50%;border:1.5px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .18s;flex-shrink:0;font-size:.72rem;color:var(--gd);}
+.pi-chk.done{background:var(--gp);border-color:var(--gs);}
+
+/* CHARTS */
+.bar-chart{display:flex;align-items:flex-end;gap:6px;height:120px;}
+.bc-wrap{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;}
+.bc-bar{width:100%;border-radius:5px 5px 0 0;background:var(--gp);transition:height .5s;}
+.bc-bar:hover{background:var(--gs);}
+.bc-lbl{font-size:.58rem;color:var(--tmu);}
+.sym-row{display:flex;align-items:center;gap:10px;padding:.5rem 0;border-bottom:1px solid var(--bdd);}
+.sym-row:last-child{border-bottom:none;}
+.sym-name{font-size:.78rem;color:var(--tx);width:130px;flex-shrink:0;}
+.sym-bar-w{flex:1;height:6px;background:var(--gg);border-radius:3px;overflow:hidden;}
+.sym-bar-f{height:100%;background:var(--gs);border-radius:3px;}
+.sym-val{font-size:.7rem;font-weight:600;color:var(--gd);width:30px;text-align:right;flex-shrink:0;}
+
+/* COMMUNITY */
+.post-card{background:var(--wh);border-radius:16px;border:1px solid var(--bdd);padding:1.1rem;margin-bottom:.85rem;transition:box-shadow .18s;}
+.post-card:hover{box-shadow:0 4px 18px rgba(42,90,26,.08);}
+.post-h{display:flex;align-items:center;gap:8px;margin-bottom:.6rem;}
+.post-av{width:32px;height:32px;border-radius:50%;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--gd);}
+.post-name{font-size:.8rem;font-weight:500;color:var(--tx);}
+.post-time{font-size:.62rem;color:var(--tmu);margin-left:auto;}
+.post-tag{display:inline-block;background:var(--gg);color:var(--tmu);border-radius:50px;padding:2px 8px;font-size:.6rem;margin-bottom:.5rem;}
+.post-body{font-size:.83rem;color:var(--tm);line-height:1.62;margin-bottom:.65rem;}
+.post-acts{display:flex;gap:12px;}
+.post-act{display:flex;align-items:center;gap:4px;font-size:.7rem;color:var(--tmu);cursor:pointer;transition:color .15s;}
+.post-act:hover{color:var(--gd);}
+
+/* CHAT */
+.chat-wrap{display:grid;grid-template-columns:1fr 300px;gap:1.1rem;height:calc(100vh - 140px);}
+.chat-panel{background:var(--wh);border-radius:18px;border:1px solid var(--bdd);display:flex;flex-direction:column;overflow:hidden;}
+.chat-h{padding:.85rem 1.1rem;border-bottom:1px solid var(--bdd);display:flex;align-items:center;gap:9px;flex-shrink:0;}
+.chat-av{width:34px;height:34px;border-radius:50%;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:1.1rem;}
+.chat-title{font-size:.88rem;font-weight:600;color:var(--tx);}
+.chat-status{font-size:.63rem;color:var(--gs);display:flex;align-items:center;gap:4px;}
+.chat-status::before{content:'';width:5px;height:5px;background:var(--gs);border-radius:50%;}
+.chat-msgs{flex:1;overflow-y:auto;padding:.85rem 1.1rem;display:flex;flex-direction:column;gap:9px;scrollbar-width:none;}
+.chat-msgs::-webkit-scrollbar{display:none;}
+.msg-w{display:flex;align-items:flex-end;gap:6px;}
+.msg-w.u{flex-direction:row-reverse;}
+.msg-av2{width:24px;height:24px;border-radius:50%;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:.82rem;flex-shrink:0;}
+.msg-b{max-width:78%;padding:9px 13px;border-radius:16px;font-size:.82rem;line-height:1.55;}
+.msg-b.ai{background:var(--gg);color:var(--tx);border:1px solid var(--bd);border-radius:16px 16px 16px 3px;}
+.msg-b.u2{background:var(--gd);color:#fff;border-radius:16px 16px 3px 16px;}
+.typing{display:flex;gap:4px;align-items:center;padding:9px 13px;}
+.typing span{width:6px;height:6px;background:var(--gl);border-radius:50%;animation:tb 1.2s infinite;}
+.typing span:nth-child(2){animation-delay:.2s;}
+.typing span:nth-child(3){animation-delay:.4s;}
+@keyframes tb{0%,60%,100%{transform:translateY(0);}30%{transform:translateY(-5px);}}
+.chat-qs{display:flex;gap:5px;padding:0 1.1rem .6rem;flex-wrap:wrap;}
+.cq{padding:5px 10px;background:var(--gg);border:1px solid var(--bd);border-radius:50px;font-size:.7rem;color:var(--tm);cursor:pointer;transition:background .15s;white-space:nowrap;}
+.cq:hover{background:var(--gp);}
+.chat-input-row{padding:.65rem 1.1rem;border-top:1px solid var(--bdd);display:flex;gap:7px;flex-shrink:0;}
+.chat-in{flex:1;padding:9px 13px;border:1.5px solid var(--bdd);border-radius:50px;font-size:.875rem;color:var(--tx);background:var(--gg);outline:none;transition:border-color .2s;}
+.chat-in:focus{border-color:var(--gs);}
+.chat-send{width:38px;height:38px;background:var(--gd);border:none;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;}
+.chat-send:hover{background:var(--gm);}
+.chat-send svg{width:14px;height:14px;stroke:#fff;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;}
+
+/* ADMIN TABLE */
+.a-tbl{width:100%;border-collapse:collapse;}
+.a-tbl th{font-size:.63rem;font-weight:600;color:var(--tmu);text-transform:uppercase;letter-spacing:.08em;text-align:left;padding:0 .65rem .6rem;border-bottom:1px solid var(--bdd);}
+.a-tbl td{padding:.65rem .65rem;border-bottom:1px solid var(--bdd);font-size:.8rem;vertical-align:middle;}
+.a-tbl tr:last-child td{border-bottom:none;}
+.a-tbl tr:hover td{background:var(--gg);}
+.a-av{width:28px;height:28px;border-radius:50%;background:var(--gp);display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:var(--gd);}
+
+/* MODAL */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:999;backdrop-filter:blur(4px);}
+.modal{background:var(--wh);border-radius:22px;padding:2rem;width:min(480px,95vw);box-shadow:0 24px 60px rgba(0,0,0,.16);max-height:90vh;overflow-y:auto;}
+.modal-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:600;color:var(--tx);margin-bottom:.25rem;}
+.modal-sub{font-size:.78rem;color:var(--tmu);margin-bottom:1.4rem;}
+
+/* AUTH */
+.auth-page{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,var(--gg) 0%,var(--wh) 60%);}
+.auth-box{display:flex;width:min(840px,98vw);border-radius:26px;overflow:hidden;box-shadow:0 28px 70px rgba(42,90,26,.14);}
+.auth-left{width:320px;min-width:320px;background:linear-gradient(160deg,var(--gd),var(--gm));padding:2.5rem;display:flex;flex-direction:column;justify-content:space-between;color:#fff;}
+.auth-right{flex:1;background:var(--wh);padding:2.5rem;overflow-y:auto;}
+.auth-left-title{font-family:'Cormorant Garamond',serif;font-size:1.75rem;font-weight:600;line-height:1.2;margin-bottom:.5rem;}
+.auth-left-title em{font-style:italic;color:var(--gl);}
+.auth-left-sub{font-size:.8rem;color:rgba(255,255,255,.65);line-height:1.65;}
+.auth-tabs{display:flex;gap:6px;margin-bottom:1.5rem;}
+.auth-tab{padding:7px 18px;border-radius:50px;font-size:.82rem;font-weight:500;cursor:pointer;transition:all .18s;border:1.5px solid var(--bd);color:var(--tmu);background:transparent;}
+.auth-tab.on{background:var(--gd);color:#fff;border-color:var(--gd);}
+
+/* ONBOARDING */
+.ob-overlay{position:fixed;inset:0;background:var(--wh);z-index:500;display:flex;align-items:center;justify-content:center;}
+.ob-box{display:flex;width:min(860px,98vw);height:min(580px,98vh);border-radius:26px;overflow:hidden;box-shadow:0 30px 80px rgba(42,90,26,.15);}
+.ob-left{width:300px;min-width:300px;background:linear-gradient(160deg,var(--gd),var(--gm));padding:2.25rem;display:flex;flex-direction:column;justify-content:space-between;color:#fff;}
+.ob-right{flex:1;background:var(--wh);display:flex;flex-direction:column;overflow:hidden;}
+.ob-right-body{flex:1;overflow-y:auto;padding:1.75rem;}
+.ob-right-body::-webkit-scrollbar{display:none;}
+.ob-right-foot{padding:.9rem 1.75rem;border-top:1px solid var(--bdd);display:flex;gap:.75rem;justify-content:flex-end;flex-shrink:0;}
+.ob-prog{height:3px;background:rgba(255,255,255,.2);border-radius:2px;margin-top:.75rem;overflow:hidden;}
+.ob-prog-fill{height:100%;background:#fff;border-radius:2px;transition:width .4s;}
+.ob-step-dots{display:flex;gap:6px;margin-top:auto;}
+.ob-dot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.25);transition:all .3s;}
+.ob-dot.on{width:20px;border-radius:3px;background:#fff;}
+.ob-q-title{font-size:1rem;font-weight:600;color:var(--tx);margin-bottom:.2rem;}
+.ob-q-sub{font-size:.77rem;color:var(--tmu);margin-bottom:1.1rem;}
+
+/* WATER */
+.water-glasses{display:flex;gap:7px;flex-wrap:wrap;margin-top:.6rem;}
+.wg{width:36px;height:36px;border-radius:9px;background:rgba(74,123,196,.1);display:flex;align-items:center;justify-content:center;font-size:.88rem;cursor:pointer;transition:background .18s;}
+.wg.on{background:var(--bl);}
+
+/* MOOD */
+.mood-row{display:flex;gap:7px;}
+.mood-btn{display:flex;flex-direction:column;align-items:center;gap:3px;padding:9px 11px;border-radius:11px;cursor:pointer;transition:background .18s;border:1.5px solid transparent;}
+.mood-btn:hover{background:var(--gp);}
+.mood-btn.on{background:var(--gp);border-color:var(--gs);}
+.mood-e{font-size:1.4rem;}
+.mood-l{font-size:.58rem;color:var(--tmu);}
+
+/* SUPPLEMENTS */
+.supp-card{background:var(--wh);border-radius:16px;border:1px solid var(--bdd);padding:1rem;}
+.supp-h{display:flex;align-items:center;gap:10px;margin-bottom:.55rem;}
+.supp-ico{width:40px;height:40px;background:var(--gp);border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:1rem;}
+.supp-name{font-size:.87rem;font-weight:500;color:var(--tx);}
+.supp-dose{font-size:.68rem;color:var(--tmu);}
+.supp-desc{font-size:.74rem;color:var(--tm);line-height:1.55;}
+.supp-chk{margin-left:auto;width:27px;height:27px;border-radius:50%;border:2px solid var(--bd);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:.78rem;transition:all .18s;}
+.supp-chk.on{background:var(--gp);border-color:var(--gs);color:var(--gd);}
+
+/* FOOTER */
+footer{background:var(--wh);border-top:1px solid var(--bdd);padding:.5rem 1.75rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.ft-l{font-size:.65rem;color:var(--tmu);}
+.ft-r{display:flex;gap:1rem;}
+.ft-link{font-size:.65rem;color:var(--tmu);cursor:pointer;}
+.ft-link:hover{color:var(--gd);}
+.ft-admin{font-size:.6rem;color:rgba(42,90,26,.22);cursor:pointer;letter-spacing:.02em;}
+.ft-admin:hover{color:var(--gd);}
+
+/* TOGGLE */
+.toggle{position:relative;display:inline-block;width:38px;height:21px;}
+.toggle input{opacity:0;width:0;height:0;}
+.t-sl{position:absolute;cursor:pointer;inset:0;background:#ccc;transition:.3s;border-radius:21px;}
+.t-sl::before{position:absolute;content:'';height:15px;width:15px;left:3px;bottom:3px;background:#fff;transition:.3s;border-radius:50%;}
+input:checked+.t-sl{background:var(--gd);}
+input:checked+.t-sl::before{transform:translateX(17px);}
+
+/* RESPONSIVE */
+@media(max-width:1100px){.g4{grid-template-columns:1fr 1fr;}.chat-wrap{grid-template-columns:1fr;}}
+@media(max-width:900px){.g3{grid-template-columns:1fr 1fr;}.g2{grid-template-columns:1fr;}.auth-left{display:none;}.ob-left{display:none;}.ob-box{width:min(440px,98vw);}.auth-box{width:min(440px,98vw);}}
+
+/* ── PAYMENT SETTINGS ─────────────────────────────────────────── */
+.pay-settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.25rem;}
+.pay-field{margin-bottom:1rem;}
+.pay-label{font-size:.72rem;font-weight:600;color:var(--tmu);text-transform:uppercase;letter-spacing:.07em;margin-bottom:.35rem;display:flex;align-items:center;gap:.4rem;}
+.pay-label .sensitive-badge{background:var(--cp);color:var(--co);font-size:.58rem;padding:2px 7px;border-radius:4px;font-weight:600;}
+.pay-input-wrap{display:flex;align-items:center;gap:.5rem;}
+.pay-input{flex:1;padding:12px 14px;border:1.5px solid var(--bdd);border-radius:12px;font-size:.88rem;background:var(--gg);color:var(--tx);outline:none;font-family:inherit;}
+.pay-input:focus{border-color:var(--gs);background:#fff;}
+.pay-reveal{background:none;border:1.5px solid var(--bdd);border-radius:8px;padding:8px 10px;cursor:pointer;color:var(--tmu);font-size:.8rem;transition:all .2s;white-space:nowrap;}
+.pay-reveal:hover{background:var(--gg);}
+.pay-reveal.revealed{background:var(--gp);color:var(--gd);border-color:var(--gs);}
+.pay-status-badge{padding:3px 10px;border-radius:50px;font-size:.65rem;font-weight:700;}
+.pay-status-set{background:var(--gp);color:var(--gd);}
+.pay-status-empty{background:var(--cp);color:var(--co);}
+.revenue-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;margin-bottom:1.5rem;}
+.revenue-card{background:linear-gradient(135deg,var(--gd),var(--gm));border-radius:18px;padding:1.25rem;color:#fff;}
+.rc-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.1em;color:rgba(255,255,255,.55);margin-bottom:.35rem;}
+.rc-value{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:#fff;line-height:1;}
+.rc-sub{font-size:.72rem;color:rgba(255,255,255,.6);margin-top:4px;}
+.payments-table{width:100%;border-collapse:collapse;}
+.payments-table th{text-align:left;padding:.75rem 1rem;font-size:.68rem;font-weight:700;color:var(--tmu);text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid var(--bdd);}
+.payments-table td{padding:.85rem 1rem;font-size:.84rem;color:var(--tx);border-bottom:1px solid var(--bdd);}
+.payments-table tr:last-child td{border-bottom:none;}
+.payments-table tr:hover td{background:var(--gg);}
+.status-pill{padding:3px 10px;border-radius:50px;font-size:.68rem;font-weight:700;display:inline-block;}
+.status-completed{background:var(--gp);color:var(--gd);}
+.status-pending{background:#FEF6E8;color:#D4860A;}
+.status-failed{background:var(--cp);color:var(--co);}
+/* Upgrade modal */
+.upgrade-modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:200;display:flex;align-items:center;justify-content:center;padding:2rem;}
+.upgrade-modal{background:#fff;border-radius:28px;padding:2rem;width:100%;max-width:520px;max-height:85vh;overflow-y:auto;}
+.upgrade-plans{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin:1.5rem 0;}
+.upgrade-plan{border:2px solid var(--bdd);border-radius:18px;padding:1.25rem;cursor:pointer;transition:all .2s;position:relative;}
+.upgrade-plan:hover{border-color:var(--gs);box-shadow:0 4px 20px rgba(30,77,20,.12);}
+.upgrade-plan.selected{border-color:var(--gd);background:var(--gp);}
+.upgrade-plan.popular::before{content:'POPULAR';position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--gd);color:#fff;font-size:.6rem;font-weight:700;padding:3px 12px;border-radius:50px;letter-spacing:.08em;}
+.up-name{font-size:.8rem;font-weight:700;color:var(--tmu);text-transform:uppercase;letter-spacing:.08em;margin-bottom:.5rem;}
+.up-price{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:600;color:var(--gd);line-height:1;}
+.up-price span{font-size:.85rem;font-weight:400;color:var(--tmu);}
+.up-features{list-style:none;margin-top:.75rem;display:flex;flex-direction:column;gap:.35rem;}
+.up-features li{font-size:.78rem;color:var(--tm);display:flex;align-items:center;gap:.4rem;}
+.up-features li::before{content:'✓';color:var(--gs);font-weight:700;flex-shrink:0;}
+
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script>
+'use strict';
+const {useState,useEffect,useRef,useCallback,useMemo}=React;
+const h=React.createElement;
+
+/* ═══════════════════════════════════════════════════════════════
+   API CLIENT
+═══════════════════════════════════════════════════════════════ */
+const API_BASE='';  // Same origin — served by Express
+let _token=sessionStorage.getItem('nia_token')||'';
+
+const api={
+  setToken(t){_token=t;if(t)sessionStorage.setItem('nia_token',t);else sessionStorage.removeItem('nia_token');},
+  async req(method,path,body){
+    const res=await fetch(API_BASE+'/api'+path,{
+      method,
+      headers:{'Content-Type':'application/json',...(_token?{Authorization:'Bearer '+_token}:{})},
+      ...(body?{body:JSON.stringify(body)}:{}),
+    });
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok) throw new Error(data.error||data.errors?.[0]?.msg||'Something went wrong');
+    return data;
+  },
+  get:(p)=>api.req('GET',p),
+  post:(p,b)=>api.req('POST',p,b),
+  put:(p,b)=>api.req('PUT',p,b),
+  del:(p)=>api.req('DELETE',p),
+};
+
+/* ═══════════════════════════════════════════════════════════════
+   HOOKS
+═══════════════════════════════════════════════════════════════ */
+function useApi(fn,deps=[]){
+  const [data,setData]=useState(null);
+  const [loading,setLoading]=useState(true);
+  const [error,setError]=useState(null);
+  const load=useCallback(async()=>{
+    try{setLoading(true);setError(null);const d=await fn();setData(d);}
+    catch(e){setError(e.message);}
+    finally{setLoading(false);}
+  },[...deps]);
+  useEffect(()=>{load();},[load]);
+  return{data,loading,error,reload:load};
+}
+
+function useToast(){
+  const [toasts,setToasts]=useState([]);
+  const add=useCallback((msg,type='success')=>{
+    const id=Date.now();
+    setToasts(t=>[...t,{id,msg,type}]);
+    setTimeout(()=>setToasts(t=>t.filter(x=>x.id!==id)),4000);
+  },[]);
+  return{toasts,success:m=>add(m,'success'),error:m=>add(m,'error'),info:m=>add(m,'info')};
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   LOGO
+═══════════════════════════════════════════════════════════════ */
+function NiaLogo({scale=1,light=false,showHealth=true}){
+  const gc=light?'rgba(255,255,255,.92)':'#2A5A1A';
+  const lc1=light?'rgba(255,255,255,.75)':'#7DBE57';
+  const lc2=light?'rgba(255,255,255,.55)':'#4A8A2E';
+  const sc=light?'rgba(255,255,255,.4)':'#7A9A6A';
+  const fs=1.3*scale;const lsz=Math.round(17*scale);
+  return h('div',{style:{display:'inline-flex',flexDirection:'column',alignItems:'flex-start',lineHeight:1,userSelect:'none'}},
+    h('div',{style:{position:'relative',display:'inline-block'}},
+      h('span',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:fs+'rem',fontWeight:600,color:gc,letterSpacing:'-.01em',display:'block',lineHeight:1}},'niA'),
+      h('svg',{style:{position:'absolute',top:(-lsz*.38)+'px',right:(-lsz*.3)+'px'},width:lsz*.72,height:lsz,viewBox:'0 0 11 17',fill:'none'},
+        h('line',{x1:5.5,y1:16,x2:5.5,y2:7,stroke:lc2,strokeWidth:1.2,strokeLinecap:'round'}),
+        h('path',{d:'M5.5,12 C3.5,10 1,10.5 1,12.5 C3,12.8 5,12.2 5.5,12',fill:lc1}),
+        h('path',{d:'M5.5,9 C7.5,7 10,7.5 10,9.5 C8,9.8 6,9.2 5.5,9',fill:lc2}),
+        h('path',{d:'M5.5,7 C5,4.5 7,4 6.5,7',fill:lc1}),
+      )
+    ),
+    showHealth&&h('span',{style:{fontSize:'.4rem',letterSpacing:'.24em',textTransform:'uppercase',color:sc,fontFamily:"'DM Sans',sans-serif",marginTop:'2px',fontWeight:400,paddingLeft:'1px'}},'HEALTH')
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   AUTH SCREEN
+═══════════════════════════════════════════════════════════════ */
+function AuthScreen({onAuth}){
+  const [tab,setTab]=useState('login');
+  const [f,setF]=useState({email:'',password:'',name:'',confirm:''});
+  const [loading,setLoading]=useState(false);
+  const [err,setErr]=useState('');
+  async function submit(e){
+    e.preventDefault();setErr('');
+    if(tab==='register'&&f.password!==f.confirm)return setErr('Passwords do not match');
+    try{
+      setLoading(true);
+      const endpoint=tab==='login'?'/auth/login':'/auth/register';
+      const payload=tab==='login'?{email:f.email,password:f.password}:{email:f.email,password:f.password,name:f.name};
+      const data=await api.post(endpoint,payload);
+      api.setToken(data.token);
+      onAuth(data.user);
+    }catch(e){setErr(e.message);}
+    finally{setLoading(false);}
+  }
+  return h('div',{className:'auth-page'},
+    h('div',{className:'auth-box'},
+      h('div',{className:'auth-left'},
+        h('div',null,h(NiaLogo,{scale:1.05,light:true})),
+        h('div',null,
+          h('div',{className:'auth-left-title'},tab==='login'?h('span',null,'Welcome ',h('em',null,'back.')):h('span',null,'Start your ',h('em',null,'wellness journey.'))),
+          h('div',{className:'auth-left-sub'},tab==='login'?'Your health data and cycle insights are waiting for you.':'Join thousands of women managing hormonal health with niA.')
+        ),
+        h('div',{style:{fontSize:'.72rem',color:'rgba(255,255,255,.4)'}},'Designed for women navigating PCOS, hormones, and everyday wellness.')
+      ),
+      h('div',{className:'auth-right'},
+        h('div',{style:{marginBottom:'1.5rem'}},h(NiaLogo,{scale:.9})),
+        h('div',{className:'auth-tabs'},
+          h('div',{className:`auth-tab${tab==='login'?' on':''}`,onClick:()=>{setTab('login');setErr('');}},  'Sign in'),
+          h('div',{className:`auth-tab${tab==='register'?' on':''}`,onClick:()=>{setTab('register');setErr('');}}, 'Create account')
+        ),
+        err&&h('div',{className:'alert alert-error'},'⚠️ ',err),
+        h('form',{onSubmit:submit},
+          tab==='register'&&h('div',{className:'f-group'},h('label',{className:'f-label'},'Full name'),h('input',{className:'f-in',required:true,placeholder:'e.g. Amara Wanjiku',value:f.name,onChange:ev=>setF({...f,name:ev.target.value})})),
+          h('div',{className:'f-group'},h('label',{className:'f-label'},'Email address'),h('input',{className:'f-in',type:'email',required:true,placeholder:'you@example.com',value:f.email,onChange:ev=>setF({...f,email:ev.target.value})})),
+          h('div',{className:'f-group'},h('label',{className:'f-label'},'Password'),h('input',{className:'f-in',type:'password',required:true,placeholder:tab==='register'?'At least 8 characters':'Enter your password',value:f.password,onChange:ev=>setF({...f,password:ev.target.value})})),
+          tab==='register'&&h('div',{className:'f-group'},h('label',{className:'f-label'},'Confirm password'),h('input',{className:'f-in',type:'password',required:true,placeholder:'Re-enter password',value:f.confirm,onChange:ev=>setF({...f,confirm:ev.target.value})})),
+          h('button',{className:'btn btn-g',style:{width:'100%'},type:'submit',disabled:loading},
+            loading?h('span',{className:'spinner'}):(tab==='login'?'Sign in →':'Create account →')
+          )
+        ),
+        h('p',{style:{fontSize:'.75rem',color:'var(--tmu)',textAlign:'center',marginTop:'1rem'}},'By continuing you agree to niA Health\'s Terms of Service and Privacy Policy.')
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ONBOARDING
+═══════════════════════════════════════════════════════════════ */
+const OB_GOALS=['Manage PCOS','Regulate cycle','Lose weight','Improve mood','Boost energy','Fertility support','Reduce acne','Better sleep'];
+const OB_SYMS=['Irregular periods','Hormonal acne','Weight gain','Mood swings','Fatigue','Hair loss','Bloating','Sugar cravings','Brain fog','Sleep issues','Cramps','Anxiety'];
+const OB_LEFT=[
+  {ico:'🌿',title:h('span',null,'Your hormonal health, ',h('em',null,'understood.')),sub:'Nia personalises everything around your cycle, goals, and symptoms.'},
+  {ico:'🎯',title:h('span',null,'Tell us your ',h('em',null,'goals.')),sub:'We build your wellness plan around what matters most to you.'},
+  {ico:'📅',title:h('span',null,'Your cycle is ',h('em',null,'unique.')),sub:'Accurate phase tracking starts with your real cycle data.'},
+];
+
+function Onboarding({user,onDone}){
+  const [step,setStep]=useState(0);
+  const TOTAL=3;
+  const [f,setF]=useState({goals:[],symptoms:[],cycle_length:28,period_length:5,last_period_date:'',country:'',age:user.age||''});
+  const [loading,setLoading]=useState(false);const [err,setErr]=useState('');
+  function tog(field,v){const a=f[field];setF({...f,[field]:a.includes(v)?a.filter(x=>x!==v):[...a,v]});}
+  const steps=[
+    h('div',null,
+      h('div',{className:'ob-q-title'},'What are your main goals?'),h('div',{className:'ob-q-sub'},'Select everything that applies to you.'),
+      h('div',{className:'chips-wrap'},OB_GOALS.map(g=>h('div',{key:g,className:`chip${f.goals.includes(g)?' on':''}`,onClick:()=>tog('goals',g)},g)))
+    ),
+    h('div',null,
+      h('div',{className:'ob-q-title'},'What symptoms do you experience?'),h('div',{className:'ob-q-sub'},'This helps Nia personalise your insights and advice.'),
+      h('div',{className:'chips-wrap'},OB_SYMS.map(s=>h('div',{key:s,className:`chip${f.symptoms.includes(s)?' on':''}`,onClick:()=>tog('symptoms',s)},s)))
+    ),
+    h('div',null,
+      h('div',{className:'ob-q-title'},'Your cycle details'),h('div',{className:'ob-q-sub'},'Used to calculate your current phase and predict your next period.'),
+      h('div',{className:'f-row',style:{marginBottom:'.75rem'}},
+        h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Cycle length (days)'),h('input',{className:'f-in',type:'number',min:20,max:45,value:f.cycle_length,onChange:ev=>setF({...f,cycle_length:parseInt(ev.target.value)})})),
+        h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Period duration (days)'),h('input',{className:'f-in',type:'number',min:1,max:10,value:f.period_length,onChange:ev=>setF({...f,period_length:parseInt(ev.target.value)})}))
+      ),
+      h('div',{className:'f-group'},h('label',{className:'f-label'},'Last period start date'),h('input',{className:'f-in',type:'date',value:f.last_period_date,onChange:ev=>setF({...f,last_period_date:ev.target.value})})),
+      h('div',{className:'f-row'},
+        h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Your age'),h('input',{className:'f-in',type:'number',min:13,max:80,value:f.age,onChange:ev=>setF({...f,age:parseInt(ev.target.value)})})),
+        h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Country'),h('input',{className:'f-in',placeholder:'e.g. Kenya',value:f.country,onChange:ev=>setF({...f,country:ev.target.value})}))
+      )
+    ),
+  ];
+  async function finish(){
+    try{
+      setLoading(true);setErr('');
+      await api.put('/auth/me',{goals:f.goals,symptoms:f.symptoms,cycle_length:f.cycle_length,period_length:f.period_length,last_period_date:f.last_period_date||undefined,country:f.country,age:f.age||undefined});
+      onDone({...user,...f});
+    }catch(e){setErr(e.message);}
+    finally{setLoading(false);}
+  }
+  const L=OB_LEFT[step];
+  return h('div',{className:'ob-overlay'},
+    h('div',{className:'ob-box'},
+      h('div',{className:'ob-left'},
+        h(NiaLogo,{scale:.9,light:true}),
+        h('div',{style:{margin:'1.5rem 0'}},h('div',{style:{fontSize:'2.5rem',marginBottom:'.75rem'}},L.ico),h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.45rem',fontWeight:600,color:'rgba(255,255,255,.92)',lineHeight:1.25,marginBottom:'.5rem'}},L.title),h('div',{style:{fontSize:'.78rem',color:'rgba(255,255,255,.58)',lineHeight:1.6}},L.sub)),
+        h('div',null,
+          h('div',{className:'ob-prog'},h('div',{className:'ob-prog-fill',style:{width:((step+1)/TOTAL*100)+'%'}})),
+          h('div',{className:'ob-step-dots',style:{marginTop:'.75rem'}},Array.from({length:TOTAL},(_,i)=>h('div',{key:i,className:`ob-dot${step===i?' on':''}`})))
+        )
+      ),
+      h('div',{className:'ob-right'},
+        h('div',{className:'ob-right-body'},
+          h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1rem',fontWeight:600,color:'var(--tmu)',marginBottom:'1.25rem'}},'Step '+(step+1)+' of '+TOTAL),
+          err&&h('div',{className:'alert alert-error'},'⚠️ ',err),
+          steps[step]
+        ),
+        h('div',{className:'ob-right-foot'},
+          step>0&&h('button',{className:'btn btn-o btn-sm',onClick:()=>setStep(step-1)},'← Back'),
+          h('button',{className:'btn btn-g btn-sm',disabled:loading,onClick:()=>{if(step<TOTAL-1)setStep(step+1);else finish();}},
+            loading?h('span',{className:'spinner'}):(step<TOTAL-1?'Continue →':'Start my journey 🌿')
+          )
+        )
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   HOME
+═══════════════════════════════════════════════════════════════ */
+const PLAN_ITEMS=[
+  {ico:'🥗',bg:'var(--gp)',name:'Balanced breakfast',sub:'High protein, whole foods',id:'bf'},
+  {ico:'🚶‍♀️',bg:'var(--gp)',name:'30 min walk',sub:'Move your body',id:'walk'},
+  {ico:'🧘‍♀️',bg:'var(--lv)',name:'10 min mindfulness',sub:'Breathe. Relax. Reset.',id:'mind'},
+  {ico:'💊',bg:'var(--bp)',name:'Take your supplements',sub:'Log in Supplements tab',id:'supp'},
+  {ico:'💧',bg:'var(--bp)',name:'Drink 8 glasses of water',sub:'Track in Daily Log',id:'water'},
+];
+
+function HomeScreen({user,setPage,toast}){
+  const {data:cycleData,loading:cycleLoading}=useApi(()=>api.get('/cycle/current'));
+  const {data:logsData,loading:logsLoading}=useApi(()=>api.get('/logs?days=1'));
+  const {data:statsData}=useApi(()=>api.get('/logs/stats'));
+  const [checked,setChecked]=useState([]);
+  const [water,setWater]=useState(0);
+
+  // Restore water from today's logs
+  useEffect(()=>{
+    if(!logsData)return;
+    const waterLogs=logsData.logs.filter(l=>l.log_type==='water');
+    if(waterLogs[0]?.numeric_value)setWater(parseInt(waterLogs[0].numeric_value));
+  },[logsData]);
+
+  async function logWater(glasses){
+    setWater(glasses);
+    try{await api.post('/logs',{log_type:'water',numeric_value:glasses});}
+    catch{}
+  }
+
+  const score=cycleData?.score||0;
+  const circ=2*Math.PI*44;
+  const phase=cycleData?.phase;
+  const dayOfCycle=cycleData?.dayOfCycle;
+  const hr=new Date().getHours();
+  const greet=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+
+  return h('div',{className:'pg'},
+    // GREETING + WELLNESS
+    h('div',{style:{display:'grid',gridTemplateColumns:'1fr 300px',gap:'1.1rem',marginBottom:'1.1rem'}},
+      h('div',{className:'wellness-panel'},
+        h('div',{style:{flex:1}},
+          h('div',{style:{marginBottom:'.75rem'}},h('div',{style:{fontSize:'.85rem',fontWeight:500,color:'var(--tx)'}},[greet,', ',(user.name?.split(' ')[0]||'Beautiful'),' 🌿']),h('div',{style:{fontSize:'.7rem',color:'var(--tmu)'}},new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})+(dayOfCycle?` · Cycle day ${dayOfCycle}` : ''))),
+          h('div',{className:'wp-lbl'},'Wellness Score'),
+          cycleLoading?h('div',{className:'skeleton',style:{height:60,width:120,borderRadius:8}}):h('div',{className:'wp-num'},score),
+          h('div',{className:'wp-up'},'Based on your real activity this week'),
+          h('button',{className:'wp-btn',onClick:()=>setPage('journey')},'View insights →')
+        ),
+        h('div',{className:'ring'},
+          h('svg',{viewBox:'0 0 100 100'},
+            h('circle',{cx:50,cy:50,r:44,fill:'none',stroke:'rgba(255,255,255,.4)',strokeWidth:8}),
+            h('circle',{cx:50,cy:50,r:44,fill:'none',stroke:'var(--gd)',strokeWidth:8,strokeDasharray:circ,strokeDashoffset:circ-(circ*score/100),strokeLinecap:'round'})
+          ),
+          h('div',{className:'ring-in'},'💚')
+        )
+      ),
+      h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},"Today's Plan"),h('div',{className:'card-action',onClick:()=>setPage('log')},'Log →')),
+        PLAN_ITEMS.map(p=>h('div',{key:p.id,className:'plan-item'},
+          h('div',{className:'pi-ico',style:{background:p.bg}},p.ico),
+          h('div',null,h('div',{className:'pi-name'},p.name),h('div',{className:'pi-sub'},p.sub)),
+          h('div',{className:`pi-chk${checked.includes(p.id)?' done':''}`,onClick:()=>setChecked(checked.includes(p.id)?checked.filter(x=>x!==p.id):[...checked,p.id])},checked.includes(p.id)?'✓':'')
+        ))
+      )
+    ),
+    // PHASE BANNER
+    phase
+      ? h('div',{className:'phase-banner',style:{background:phase.color}},
+          h('span',{className:'pb-ico'},phase.emoji),
+          h('div',null,h('div',{className:'pb-phase'},'Your Current Phase'),h('div',{className:'pb-name'},phase.phase+' Phase'),h('div',{className:'pb-desc'},
+            {Menstrual:'Rest & restore. Focus on iron-rich foods and gentle movement today.',Follicular:'Energy is rising! Great time for strength training and new habits.',Ovulation:'Peak energy & confidence. Ideal for high-intensity workouts and big decisions.',Luteal:'Wind down. Magnesium-rich foods and restorative movement will help.'}[phase.phase]
+          )),
+          h('div',{className:'pb-right'},h('div',{className:'pb-day-n'},'Day '+(dayOfCycle||'—')),h('div',{className:'pb-day-l'},'of your cycle'))
+        )
+      : !cycleLoading&&h('div',{className:'card',style:{marginBottom:'1.1rem',cursor:'pointer'},onClick:()=>setPage('cycle')},
+          h('div',{className:'empty-state'},h('span',{className:'empty-icon'},'📅'),h('div',{className:'empty-title'},'Track your cycle'),h('div',{className:'empty-sub'},'Log your last period to unlock cycle phase insights and predictions.'),h('div',{className:'btn btn-g btn-sm',style:{display:'inline-flex',marginTop:'.25rem'}},'Start tracking →'))
+        ),
+    // STAT CARDS
+    h('div',{className:'g4',style:{marginBottom:'1.1rem'}},
+      [{ico:'🔥',bg:'var(--cp)',lbl:'Day streak',val:statsData?.streak?.streak||0,sub:'days logged'},{ico:'💧',bg:'var(--bp)',lbl:'Water today',val:water+'/8',sub:'glasses'},{ico:'😴',bg:'var(--lv)',lbl:'Avg sleep',val:statsData?.sleep?.avg_hours?parseFloat(statsData.sleep.avg_hours).toFixed(1)+'h':'—',sub:'this week'},{ico:'📊',bg:'var(--gp)',lbl:'Logs this week',val:statsData?Object.values(statsData).reduce((a,v)=>a+(parseInt(v?.count)||0),0)||'—':'—',sub:'total entries'}].map(({ico,bg,lbl,val,sub})=>
+        h('div',{key:lbl,className:'stat-card'},h('div',{className:'sc-ico',style:{background:bg}},ico),h('div',{className:'sc-num'},val),h('div',{className:'sc-lbl'},lbl),h('div',{style:{fontSize:'.65rem',color:'var(--tmu)',marginTop:2}},sub))
+      )
+    ),
+    // WATER + MOOD QUICK LOG
+    h('div',{className:'g2'},
+      h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'💧 Today\'s water — '+water+'/8 glasses')),
+        h('div',{className:'water-glasses'},Array.from({length:8},(_,i)=>h('div',{key:i,className:`wg${i<water?' on':''}`,onClick:()=>logWater(i<water?i:i+1)},i<water?'💧':'○'))),
+        h('div',{style:{marginTop:'.65rem',fontSize:'.75rem',color:'var(--tmu)'}},water>=8?'🎉 Goal reached!':water>=5?'More than halfway!':'Keep hydrating — your hormones will thank you.')
+      ),
+      h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Quick mood log')),
+        h('div',{className:'mood-row'},[{e:'😫',l:'Terrible'},{e:'😔',l:'Low'},{e:'😐',l:'Okay'},{e:'🙂',l:'Good'},{e:'😄',l:'Amazing'}].map(m=>
+          h('div',{key:m.l,className:'mood-btn',onClick:async()=>{try{await api.post('/logs',{log_type:'mood',value:m.l});toast.success('Mood logged!');}catch(e){toast.error(e.message);}},title:'Log mood: '+m.l},h('div',{className:'mood-e'},m.e),h('div',{className:'mood-l'},m.l))
+        )),
+        h('div',{style:{marginTop:'.75rem',fontSize:'.75rem',color:'var(--tmu)'}},'All logged data builds your patterns over time.')
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CYCLE
+═══════════════════════════════════════════════════════════════ */
+function CycleScreen({user,toast}){
+  const {data,loading,reload}=useApi(()=>api.get('/cycle/current'));
+  const {data:history}=useApi(()=>api.get('/cycle/history'));
+  const [logDate,setLogDate]=useState(new Date().toISOString().split('T')[0]);
+  const [logging,setLogging]=useState(false);
+  async function logPeriod(){
+    try{setLogging(true);await api.post('/cycle/log',{start_date:logDate});toast.success('Period logged! Cycle predictions updated.');reload();}
+    catch(e){toast.error(e.message);}
+    finally{setLogging(false);}
+  }
+  const phase=data?.phase;const day=data?.dayOfCycle;
+  const phaseDescs={
+    Menstrual:['🥩 Iron-rich foods like lentils, spinach, and dark chocolate help replenish what you lose.','🛁 Heat therapy (warm water bottle) eases cramps naturally.','🚶‍♀️ Light walking or yoga is ideal — rest is medicine today.'],
+    Follicular:['🥗 Fermented foods support estrogen metabolism. Think yogurt and fresh salads.','💪 Energy is rising — great time to increase workout intensity.','🌟 Start new habits or projects — your brain is sharpest now.'],
+    Ovulation:['🥑 Zinc and antioxidants (pumpkin seeds, chickpeas, berries) support peak hormonal function.','🏋️‍♀️ Peak strength and endurance — push harder in workouts this week.','💬 Communication and confidence are at their highest right now.'],
+    Luteal:['🍫 Magnesium-rich foods (dark chocolate, nuts, seeds) ease PMS symptoms.','🧘‍♀️ Moderate intensity training only — over-training raises cortisol.','😴 Try magnesium glycinate before bed to improve sleep quality.'],
+  };
+  return h('div',{className:'pg'},
+    h('div',{className:'pg-title',style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,marginBottom:'.25rem'}},'Cycle Tracker'),
+    loading?h('div',{className:'loading-center'},h('div',{className:'spinner spinner-lg'})):
+    h('div',null,
+      phase&&h('div',{className:'phase-banner',style:{background:phase.color,marginBottom:'1.1rem'}},
+        h('span',{className:'pb-ico'},phase.emoji),
+        h('div',null,h('div',{className:'pb-phase'},'Current Phase'),h('div',{className:'pb-name'},phase.phase+' Phase'),h('div',{className:'pb-desc'},{Menstrual:'Rest and restore.',Follicular:'Energy rising!',Ovulation:'Peak performance.',Luteal:'Wind down.'}[phase.phase])),
+        h('div',{className:'pb-right'},h('div',{className:'pb-day-n'},'Day '+(day||'—')),h('div',{className:'pb-day-l'},'of '+user.cycle_length+'-day cycle'),data?.daysUntilNext!==null&&h('div',{style:{fontSize:'.65rem',color:'rgba(255,255,255,.55)',marginTop:'4px'}},data.daysUntilNext+' days until next period'))
+      ),
+      !data?.dayOfCycle&&h('div',{className:'alert alert-info'},'📅 Log your last period date below to unlock cycle phase tracking and predictions.'),
+      h('div',{className:'g2'},
+        h('div',null,
+          h('div',{className:'card',style:{marginBottom:'1.1rem'}},
+            h('div',{className:'card-head'},h('div',{className:'card-title'},'Log Period'),null),
+            h('div',{className:'f-group'},h('label',{className:'f-label'},'Period start date'),h('input',{className:'f-in',type:'date',value:logDate,onChange:ev=>setLogDate(ev.target.value)})),
+            h('button',{className:'btn btn-g',style:{width:'100%',background:'var(--co)'},disabled:logging,onClick:logPeriod},logging?h('span',{className:'spinner'}):'🩸 Log Period')
+          ),
+          history?.history?.length>0&&h('div',{className:'card'},
+            h('div',{className:'card-head'},h('div',{className:'card-title'},'Cycle History')),
+            h('div',null,history.history.map((c,i)=>h('div',{key:c.id,style:{display:'flex',justifyContent:'space-between',padding:'.6rem 0',borderBottom:'1px solid var(--bdd)'}},h('span',{style:{fontSize:'.82rem',color:'var(--tx)'}},new Date(c.start_date).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'})),h('span',{className:'tag tg'},'Logged'))))
+          )
+        ),
+        phase&&h('div',{className:'card'},
+          h('div',{className:'card-head'},h('div',{className:'card-title'},phase.phase+' Phase — What this means')),
+          h('div',{style:{display:'flex',flexDirection:'column',gap:'10px'}},
+            (phaseDescs[phase.phase]||[]).map((tip,i)=>h('div',{key:i,style:{display:'flex',alignItems:'flex-start',gap:'9px',padding:'.8rem',background:'var(--gg)',borderRadius:'12px'}},h('span',{style:{fontSize:'1.1rem',flexShrink:0}},tip.slice(0,2)),h('div',{style:{fontSize:'.8rem',color:'var(--tm)',lineHeight:1.55}},tip.slice(3))))
+          )
+        )
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DAILY LOG
+═══════════════════════════════════════════════════════════════ */
+const LOG_TYPES=[
+  {ico:'🩸',n:'Period',lbl:'period',s:'Log flow & cramps'},{ico:'💤',n:'Sleep',lbl:'sleep_hours',s:'Hours slept',numeric:true},
+  {ico:'🍽️',n:'Meals',lbl:'meals',s:'What you ate'},{ico:'🏃‍♀️',n:'Exercise',lbl:'exercise',s:'Type & duration'},
+  {ico:'😤',n:'Stress',lbl:'stress_level',s:'Rate 1-10',numeric:true},{ico:'⚖️',n:'Weight',lbl:'weight',s:'Track in kg',numeric:true},
+  {ico:'💊',n:'Supplements',lbl:'supplement',s:'Did you take them?'},{ico:'🌸',n:'Symptoms',lbl:'symptom',s:'Acne, bloating etc.'},
+];
+function LogScreen({toast}){
+  const {data:logsData,loading,reload}=useApi(()=>api.get('/logs?days=7'));
+  const [showModal,setShowModal]=useState(null);
+  const [val,setVal]=useState('');const [numVal,setNumVal]=useState('');const [notes,setNotes]=useState('');const [saving,setSaving]=useState(false);
+  async function saveLog(){
+    try{setSaving(true);await api.post('/logs',{log_type:showModal.lbl,value:val||undefined,numeric_value:numVal||undefined,notes:notes||undefined});toast.success(showModal.n+' logged!');setShowModal(null);setVal('');setNumVal('');setNotes('');reload();}
+    catch(e){toast.error(e.message);}
+    finally{setSaving(false);}
+  }
+  const todayLogs=logsData?.logs?.filter(l=>new Date(l.logged_at).toDateString()===new Date().toDateString())||[];
+  return h('div',{className:'pg'},
+    h('div',{className:'pg-title',style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,marginBottom:'.25rem'}},'Daily Log 📝'),
+    h('div',{style:{fontSize:'.8rem',color:'var(--tmu)',marginBottom:'1.25rem'}},'Track your health data. Every log helps Nia understand your body better.'),
+    h('div',{className:'g3',style:{marginBottom:'1.25rem'}},
+      LOG_TYPES.map(it=>h('div',{key:it.n,className:'card-sm',style:{cursor:'pointer',transition:'transform .18s, box-shadow .18s'},onClick:()=>{setShowModal(it);setVal('');setNumVal('');setNotes('');}},
+        h('div',null,
+          h('div',{style:{fontSize:'1.4rem',marginBottom:'.4rem'}},it.ico),
+          h('div',{style:{fontSize:'.85rem',fontWeight:500,color:'var(--tx)',marginBottom:'2px'}},it.n),
+          h('div',{style:{fontSize:'.7rem',color:'var(--tmu)'}},it.s)
+        )
+      ))
+    ),
+    todayLogs.length>0&&h('div',{className:'card'},
+      h('div',{className:'card-head'},h('div',{className:'card-title'},"Today's logs ("+todayLogs.length+')'),h('div',{className:'card-action',onClick:reload},'Refresh')),
+      loading?h('div',{className:'loading-center'},h('div',{className:'spinner'})):
+      h('div',{style:{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:'8px'}},
+        todayLogs.map(l=>h('div',{key:l.id,style:{background:'var(--gg)',borderRadius:'10px',padding:'.7rem'}},
+          h('div',{style:{fontSize:'.82rem',fontWeight:500,color:'var(--tx)',marginBottom:'2px'}},l.log_type.replace(/_/g,' ')),
+          l.value&&h('div',{style:{fontSize:'.75rem',color:'var(--gd)',fontWeight:500}},l.value),
+          l.numeric_value&&h('div',{style:{fontSize:'.75rem',color:'var(--gd)',fontWeight:500}},l.numeric_value),
+          h('div',{style:{fontSize:'.63rem',color:'var(--tmu)',marginTop:'2px'}},new Date(l.logged_at).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}))
+        ))
+      )
+    ),
+    todayLogs.length===0&&!loading&&h('div',{className:'card'},
+      h('div',{className:'empty-state'},h('span',{className:'empty-icon'},'📊'),h('div',{className:'empty-title'},'Nothing logged today yet'),h('div',{className:'empty-sub'},'Tap any category above to start tracking. Your first log takes 10 seconds.'))
+    ),
+    showModal&&h('div',{className:'modal-bg',onClick:ev=>{if(ev.target===ev.currentTarget)setShowModal(null);}},
+      h('div',{className:'modal'},
+        h('div',{className:'modal-title'},showModal.ico+' Log '+showModal.n),h('div',{className:'modal-sub'},'This will be saved to your health record.'),
+        showModal.numeric
+          ? h('div',{className:'f-group'},h('label',{className:'f-label'},'Value'),h('input',{className:'f-in',type:'number',step:'0.1',placeholder:{sleep_hours:'e.g. 7.5',stress_level:'1-10',weight:'kg'}[showModal.lbl]||'Enter value',value:numVal,onChange:ev=>setNumVal(ev.target.value)}))
+          : h('div',{className:'f-group'},h('label',{className:'f-label'},'Details'),h('input',{className:'f-in',placeholder:'e.g. '+showModal.s,value:val,onChange:ev=>setVal(ev.target.value)})),
+        h('div',{className:'f-group'},h('label',{className:'f-label'},'Notes (optional)'),h('textarea',{className:'f-ta',rows:2,placeholder:'Any extra context...',value:notes,onChange:ev=>setNotes(ev.target.value)})),
+        h('div',{style:{display:'flex',gap:'8px',justifyContent:'flex-end'}},
+          h('button',{className:'btn btn-o btn-sm',onClick:()=>setShowModal(null)},'Cancel'),
+          h('button',{className:'btn btn-g btn-sm',disabled:saving,onClick:saveLog},saving?h('span',{className:'spinner'}):'Save log')
+        )
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   JOURNEY
+═══════════════════════════════════════════════════════════════ */
+function JourneyScreen(){
+  const {data:stats,loading}=useApi(()=>api.get('/logs/stats'));
+  const scores=stats?.scores||[];
+  const maxScore=scores.length?Math.max(...scores.map(s=>s.score)):100;
+  const syms=(stats?.mood||[]).slice(0,8);
+  const maxSym=syms.length?Math.max(...syms.map(s=>parseInt(s.count))):1;
+  return h('div',{className:'pg'},
+    h('div',{className:'pg-title',style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,marginBottom:'.25rem'}},'Your Journey 📈'),
+    h('div',{style:{fontSize:'.8rem',color:'var(--tmu)',marginBottom:'1.25rem'}},'Your wellness data over time — real insights from your real logs.'),
+    loading?h('div',{className:'loading-center'},h('div',{className:'spinner spinner-lg'})):
+    h('div',null,
+      h('div',{className:'g4',style:{marginBottom:'1.25rem'}},
+        [{v:stats?.streak?.streak||0,l:'Day streak 🔥'},{v:stats?.scores?.[0]?.score||0,l:'Current score'},{v:stats?.sleep?.avg_hours?parseFloat(stats.sleep.avg_hours).toFixed(1)+'h':'—',l:'Avg sleep'},{v:stats?.water?.avg_glasses?parseFloat(stats.water.avg_glasses).toFixed(1):'—',l:'Avg water/day'}].map(({v,l})=>
+          h('div',{key:l,className:'stat-card'},h('div',{className:'sc-num'},v),h('div',{className:'sc-lbl'},l))
+        )
+      ),
+      scores.length>0
+        ? h('div',{className:'card',style:{marginBottom:'1.25rem'}},
+            h('div',{className:'card-head'},h('div',{className:'card-title'},'Wellness Score History')),
+            h('svg',{viewBox:`0 0 520 90`,style:{width:'100%'},height:110},
+              h('defs',null,h('linearGradient',{id:'sg',x1:'0',y1:'0',x2:'0',y2:'1'},h('stop',{offset:'0%',stopColor:'var(--gs)',stopOpacity:.25}),h('stop',{offset:'100%',stopColor:'var(--gs)',stopOpacity:0}))),
+              scores.length>1&&h('path',{d:'M'+scores.map((s,i)=>`${i*(520/(scores.length-1))},${90-s.score/maxScore*80}`).join(' L')+` L${520},90 L0,90 Z`,fill:'url(#sg)'}),
+              scores.length>1&&h('polyline',{points:scores.map((s,i)=>`${i*(520/(scores.length-1))},${90-s.score/maxScore*80}`).join(' '),fill:'none',stroke:'var(--gs)',strokeWidth:2.5,strokeLinecap:'round',strokeLinejoin:'round'}),
+              scores.map((s,i)=>h('circle',{key:i,cx:i*(520/Math.max(scores.length-1,1)),cy:90-s.score/maxScore*80,r:3.5,fill:'var(--gd)'}))
+            ),
+            h('div',{style:{display:'flex',justifyContent:'space-between',marginTop:'4px'}},
+              scores.map((s,i)=>h('div',{key:i,style:{fontSize:'.56rem',color:'var(--tmu)',flex:1,textAlign:'center'}},new Date(s.scored_on).toLocaleDateString([],{month:'short',day:'numeric'})))
+            )
+          )
+        : h('div',{className:'card',style:{marginBottom:'1.25rem'}},
+            h('div',{className:'empty-state'},h('span',{className:'empty-icon'},'📊'),h('div',{className:'empty-title'},'No score history yet'),h('div',{className:'empty-sub'},'Log daily data to build your wellness score over time.'))
+          ),
+      syms.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Mood Patterns (last 30 days)')),
+        syms.map(m=>h('div',{key:m.value,className:'sym-row'},h('div',{className:'sym-name'},m.value),h('div',{className:'sym-bar-w'},h('div',{className:'sym-bar-f',style:{width:(m.count/maxSym*100)+'%'}})),h('div',{className:'sym-val'},m.count+'x')))
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   COMMUNITY
+═══════════════════════════════════════════════════════════════ */
+const COM_TAGS=['PCOS Support','Cycle Tracking','Nutrition','Mindfulness','Supplements','Fitness','Mental Health','Wins 🎉'];
+function CommunityScreen({user,toast}){
+  const [filter,setFilter]=useState('');
+  const {data,loading,reload}=useApi(()=>api.get('/community/posts'+(filter?'?tag='+encodeURIComponent(filter):'')),[filter]);
+  const [liked,setLiked]=useState({});
+  const [showNew,setShowNew]=useState(false);
+  const [body,setBody]=useState('');const [tag,setTag]=useState('PCOS Support');const [anon,setAnon]=useState(false);const [posting,setPosting]=useState(false);
+
+  async function toggleLike(postId,currentLiked){
+    try{const r=await api.post(`/community/posts/${postId}/like`,{});setLiked(l=>({...l,[postId]:r.liked}));}
+    catch(e){toast.error(e.message);}
+  }
+
+  async function submitPost(){
+    if(body.trim().length<10)return toast.error('Post must be at least 10 characters');
+    try{setPosting(true);await api.post('/community/posts',{content:body.trim(),tag,is_anonymous:anon});toast.success('Post submitted for review. It will appear once approved.');setBody('');setShowNew(false);}
+    catch(e){toast.error(e.message);}
+    finally{setPosting(false);}
+  }
+
+  const posts=data?.posts||[];
+  return h('div',{className:'pg'},
+    h('div',{className:'pg-title',style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,marginBottom:'.25rem'}},'Community 🌸'),
+    h('div',{style:{fontSize:'.8rem',color:'var(--tmu)',marginBottom:'1rem'}},'Connect with women on the same journey. All posts are reviewed before publishing.'),
+    h('div',{style:{display:'flex',gap:'7px',marginBottom:'1rem',flexWrap:'wrap'}},
+      h('div',{className:`chip${filter===''?' on':''}`,onClick:()=>setFilter('')},'All'),
+      COM_TAGS.map(t=>h('div',{key:t,className:`chip${filter===t?' on':''}`,onClick:()=>setFilter(t)},t))
+    ),
+    h('div',{className:'g2'},
+      h('div',null,
+        h('div',{className:'card',style:{marginBottom:'.85rem',cursor:'pointer'},onClick:()=>setShowNew(true)},
+          h('p',{style:{fontSize:'.85rem',color:'var(--tmu)'}},'Share your journey or ask the community...')
+        ),
+        loading?h('div',{className:'loading-center'},h('div',{className:'spinner'})):
+        posts.length===0
+          ? h('div',{className:'empty-state'},h('span',{className:'empty-icon'},'🌸'),h('div',{className:'empty-title'},'No posts yet'),h('div',{className:'empty-sub'},'Be the first to share in this category.'))
+          : posts.map(p=>h('div',{key:p.id,className:'post-card'},
+              h('div',{className:'post-h'},h('div',{className:'post-av'},(p.author_name||'AN').slice(0,2).toUpperCase()),h('div',null,h('div',{className:'post-name'},p.author_name||'Anonymous'),h('div',{className:'post-tag'},p.tag)),h('div',{className:'post-time'},new Date(p.created_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))),
+              h('div',{className:'post-body'},p.content),
+              h('div',{className:'post-acts'},
+                h('div',{className:'post-act',onClick:()=>toggleLike(p.id,liked[p.id]??p.user_liked)},(liked[p.id]??p.user_liked)?'❤️':'🤍',' ',(p.likes_count+(liked[p.id]!==undefined?(liked[p.id]?1:-1):0))),
+                h('div',{className:'post-act'},'💬 ',p.comments_count),
+                h('div',{className:'post-act',onClick:async()=>{try{await api.post(`/community/posts/${p.id}/report`,{reason:'Reported by user'});toast.success('Reported. Our team will review this.');}catch(e){toast.error(e.message);}}},'🚩')
+              )
+            ))
+      ),
+      h('div',null,
+        h('div',{className:'card'},
+          h('div',{className:'card-head'},h('div',{className:'card-title'},'Community Guidelines')),
+          ['Be kind and supportive — we\'re all on this journey together.','No medical diagnoses. Share experiences, not prescriptions.','Respect anonymity. What\'s shared here stays here.','Off-topic or harmful posts will be removed by moderators.','This is a safe space. Report anything that doesn\'t feel right.'].map((r,i)=>h('div',{key:i,style:{fontSize:'.78rem',color:'var(--tm)',padding:'.4rem 0',borderBottom:'1px solid var(--bdd)',lineHeight:1.5}},r))
+        )
+      )
+    ),
+    showNew&&h('div',{className:'modal-bg',onClick:ev=>{if(ev.target===ev.currentTarget)setShowNew(false);}},
+      h('div',{className:'modal'},
+        h('div',{className:'modal-title'},'Share with the community'),h('div',{className:'modal-sub'},'Posts are reviewed by our team before appearing publicly.'),
+        h('div',{style:{display:'flex',gap:'6px',flexWrap:'wrap',marginBottom:'1rem'}},COM_TAGS.map(t=>h('div',{key:t,className:`chip${tag===t?' on':''}`,onClick:()=>setTag(t)},t))),
+        h('div',{className:'f-group'},h('textarea',{className:'f-ta',rows:4,placeholder:"What's on your mind? Share your experience or ask a question... (min 10 characters)",value:body,onChange:ev=>setBody(ev.target.value)})),
+        h('div',{style:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'1rem'}},h('input',{type:'checkbox',id:'anon3',checked:anon,onChange:ev=>setAnon(ev.target.checked)}),h('label',{htmlFor:'anon3',style:{fontSize:'.82rem',color:'var(--tm)'}},'Post anonymously — your name will not be shown')),
+        h('div',{style:{display:'flex',gap:'8px',justifyContent:'flex-end'}},
+          h('button',{className:'btn btn-o btn-sm',onClick:()=>setShowNew(false)},'Cancel'),
+          h('button',{className:'btn btn-g btn-sm',disabled:posting,onClick:submitPost},posting?h('span',{className:'spinner'}):'Submit post')
+        )
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   CHAT
+═══════════════════════════════════════════════════════════════ */
+const QUICK_PROMPTS=['Why is my period late?','What foods help with PCOS?','Why am I craving sugar?','How do I reduce cortisol?','What is the luteal phase?','Best supplements for PCOS?','How to improve sleep?'];
+function ChatScreen(){
+  const {data:sessionsData,reload:reloadSessions}=useApi(()=>api.get('/ai/sessions'));
+  const [sessionId,setSessionId]=useState(null);
+  const [msgs,setMsgs]=useState([]);
+  const [loading,setLoading]=useState(false);
+  const [msgsLoading,setMsgsLoading]=useState(false);
+  const [inp,setInp]=useState('');
+  const endRef=useRef();
+  useEffect(()=>{endRef.current?.scrollIntoView({behavior:'smooth'});},[msgs,loading]);
+
+  async function loadSession(sid){
+    setSessionId(sid);setMsgsLoading(true);
+    try{const d=await api.get(`/ai/sessions/${sid}/messages`);setMsgs(d.messages.map(m=>({role:m.role,content:m.content})));}
+    catch{}
+    finally{setMsgsLoading(false);}
+  }
+
+  async function newSession(){setSessionId(null);setMsgs([]);}
+
+  async function send(txt){
+    const msg=txt||inp.trim();if(!msg||loading)return;setInp('');
+    setMsgs(m=>[...m,{role:'user',content:msg}]);setLoading(true);
+    try{
+      const r=await api.post('/ai/chat',{message:msg,...(sessionId?{session_id:sessionId}:{})});
+      setMsgs(m=>[...m,{role:'assistant',content:r.reply}]);
+      if(!sessionId){setSessionId(r.session_id);reloadSessions();}
+    }catch(e){setMsgs(m=>[...m,{role:'assistant',content:'I\'m having trouble connecting right now. Please try again in a moment 🌿'}]);}
+    finally{setLoading(false);}
+  }
+
+  return h('div',{className:'pg'},
+    h('div',{className:'chat-wrap'},
+      h('div',{className:'chat-panel'},
+        h('div',{className:'chat-h'},
+          h('div',{className:'chat-av'},'🌿'),
+          h('div',{style:{flex:1}},h('div',{className:'chat-title'},'Nia Health AI'),h('div',{className:'chat-status'},'Online · Hormonal health specialist')),
+          h('button',{className:'btn btn-o btn-xs',onClick:newSession},'New chat')
+        ),
+        msgsLoading?h('div',{className:'loading-center'},h('div',{className:'spinner'})):
+        h('div',{className:'chat-msgs'},
+          msgs.length===0&&h('div',{style:{display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',height:'100%',padding:'2rem',textAlign:'center'}},
+            h('div',{style:{fontSize:'2.5rem',marginBottom:'1rem'}},'🌿'),
+            h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:600,color:'var(--tx)',marginBottom:'.5rem'}},'Ask Nia anything'),
+            h('div',{style:{fontSize:'.82rem',color:'var(--tmu)',lineHeight:1.6,maxWidth:'300px'}},'Your AI companion for PCOS, cycle insights, nutrition, mood, and hormonal wellness.')
+          ),
+          msgs.map((m,i)=>h('div',{key:i,className:`msg-w${m.role==='user'?' u':''}`},m.role==='assistant'&&h('div',{className:'msg-av2'},'🌿'),h('div',{className:`msg-b${m.role==='assistant'?' ai':' u2'}`},m.content))),
+          loading&&h('div',{className:'msg-w'},h('div',{className:'msg-av2'},'🌿'),h('div',{className:'msg-b ai'},h('div',{className:'typing'},h('span'),h('span'),h('span')))),
+          h('div',{ref:endRef})
+        ),
+        msgs.length===0&&h('div',{className:'chat-qs'},QUICK_PROMPTS.map(q=>h('div',{key:q,className:'cq',onClick:()=>send(q)},q))),
+        h('div',{className:'chat-input-row'},
+          h('input',{className:'chat-in',placeholder:'Ask Nia anything about your health...',value:inp,onChange:ev=>setInp(ev.target.value),onKeyDown:ev=>{if(ev.key==='Enter'&&!ev.shiftKey){ev.preventDefault();send();}}}),
+          h('button',{className:'chat-send',onClick:()=>send()},h('svg',{viewBox:'0 0 24 24'},h('line',{x1:22,y1:2,x2:11,y2:13}),h('polygon',{points:'22 2 15 22 11 13 2 9 22 2'})))
+        )
+      ),
+      h('div',{className:'card',style:{overflowY:'auto'}},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Past Conversations'),h('div',{className:'card-action',onClick:newSession},'+ New')),
+        sessionsData?.sessions?.length===0&&h('div',{style:{fontSize:'.8rem',color:'var(--tmu)',padding:'.5rem 0'}},'No conversations yet. Start by asking Nia a question!'),
+        (sessionsData?.sessions||[]).map(s=>h('div',{key:s.id,style:{padding:'.6rem .75rem',borderRadius:'10px',cursor:'pointer',background:sessionId===s.id?'var(--gp)':'transparent',marginBottom:'4px',transition:'background .15s'},onClick:()=>loadSession(s.id)},
+          h('div',{style:{fontSize:'.8rem',color:'var(--tx)',fontWeight:sessionId===s.id?500:400,overflow:'hidden',textOverflow:'ellipsis',whiteSpace:'nowrap'}},s.title||'Conversation'),
+          h('div',{style:{fontSize:'.63rem',color:'var(--tmu)',marginTop:'2px'}},new Date(s.updated_at).toLocaleDateString('en-GB',{day:'numeric',month:'short'}))
+        ))
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   SUPPLEMENTS
+═══════════════════════════════════════════════════════════════ */
+const SUPP_LIST=[
+  {ic:'💊',n:'Inositol (Myo + D-Chiro)',dose:'4g daily with meals',body:'Evidence-backed for PCOS — improves insulin sensitivity and ovarian function. One of the most studied supplements for PCOS.'},
+  {ic:'☀️',n:'Vitamin D3',dose:'2000-4000 IU daily',body:'Most women with PCOS are deficient. Supports mood, insulin sensitivity, and immune function.'},
+  {ic:'🧲',n:'Magnesium Glycinate',dose:'300mg before bed',body:'Reduces PMS symptoms, improves sleep quality, and helps with anxiety and mood swings.'},
+  {ic:'🐟',n:'Omega-3 (Fish Oil)',dose:'2g EPA/DHA daily',body:'Reduces inflammation, supports heart health, and improves period pain significantly.'},
+  {ic:'🌿',n:'Spearmint Tea',dose:'2 cups daily',body:'Natural anti-androgen — reduces testosterone levels, helping with acne and excess hair growth.'},
+  {ic:'⚡',n:'N-Acetyl Cysteine (NAC)',dose:'600mg twice daily',body:'Improves insulin resistance, reduces testosterone, and supports liver detox pathways.'},
+];
+function SuppsScreen({toast}){
+  const {data:todayData,reload}=useApi(()=>api.get('/supplements/today'));
+  const taken=todayData?.supplements?.map(s=>s.supplement_name)||[];
+  async function toggleSupp(name,dose){
+    if(taken.includes(name))return;
+    try{await api.post('/supplements/log',{supplement_name:name,dose});toast.success(name+' logged for today!');reload();}
+    catch(e){toast.error(e.message);}
+  }
+  return h('div',{className:'pg'},
+    h('div',{className:'pg-title',style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,marginBottom:'.25rem'}},'Supplements 💊'),
+    h('div',{style:{fontSize:'.8rem',color:'var(--tmu)',marginBottom:'1.25rem'}},'Evidence-based supplements for PCOS and hormonal health. Always consult your doctor before starting.'),
+    taken.length>0&&h('div',{className:'alert alert-success'},'✅ Taken today: '+taken.join(', ')),
+    h('div',{className:'g3'},
+      SUPP_LIST.map(s=>h('div',{key:s.n,className:'supp-card'},
+        h('div',{className:'supp-h'},
+          h('div',{className:'supp-ico'},s.ic),
+          h('div',{style:{flex:1}},h('div',{className:'supp-name'},s.n),h('div',{className:'supp-dose'},s.dose)),
+          h('div',{className:`supp-chk${taken.includes(s.n)?' on':''}`,onClick:()=>toggleSupp(s.n,s.dose)},taken.includes(s.n)?'✓':'')
+        ),
+        h('div',{className:'supp-desc'},s.body)
+      ))
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   NOTIFICATIONS
+═══════════════════════════════════════════════════════════════ */
+function NotificationsScreen({toast}){
+  const {data,loading,reload}=useApi(()=>api.get('/notifications'));
+  const notifs=data?.notifications||[];
+  const unread=notifs.filter(n=>!n.is_read).length;
+  async function markAll(){try{await api.put('/notifications/read-all',{});reload();toast.success('All notifications marked as read.');}catch(e){toast.error(e.message);}}
+  return h('div',{className:'pg'},
+    h('div',{style:{display:'flex',alignItems:'center',justifyContent:'space-between',marginBottom:'1.25rem'}},
+      h('div',{className:'pg-title',style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,margin:0}},'Notifications 🔔'),
+      unread>0&&h('button',{className:'btn btn-o btn-sm',onClick:markAll},'Mark all read')
+    ),
+    loading?h('div',{className:'loading-center'},h('div',{className:'spinner'})):
+    notifs.length===0
+      ? h('div',{className:'card'},h('div',{className:'empty-state'},h('span',{className:'empty-icon'},'🔔'),h('div',{className:'empty-title'},'All caught up'),h('div',{className:'empty-sub'},'Notifications from niA Health will appear here.')))
+      : h('div',null,notifs.map(n=>h('div',{key:n.id,style:{display:'flex',alignItems:'flex-start',gap:'11px',padding:'1rem',background:'var(--wh)',borderRadius:'14px',border:'1px solid '+(n.is_read?'var(--bdd)':'var(--gl)'),marginBottom:'8px'}},
+          h('div',{style:{width:36,height:36,background:'var(--gp)',borderRadius:'50%',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1rem',flexShrink:0}},n.type==='welcome'?'🌿':n.type==='broadcast'?'📣':'🔔'),
+          h('div',{style:{flex:1}},
+            h('div',{style:{fontSize:'.85rem',fontWeight:n.is_read?400:600,color:'var(--tx)',marginBottom:'2px'}},n.title),
+            h('div',{style:{fontSize:'.78rem',color:'var(--tm)',lineHeight:1.55}},n.body),
+            h('div',{style:{fontSize:'.62rem',color:'var(--tmu)',marginTop:'4px'}},new Date(n.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}))
+          ),
+          !n.is_read&&h('div',{style:{width:8,height:8,background:'var(--gd)',borderRadius:'50%',flexShrink:0,marginTop:4}})
+        )))
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   PROFILE
+═══════════════════════════════════════════════════════════════ */
+function ProfileScreen({user,setUser,toast}){
+  const [edit,setEdit]=useState(false);
+  const [f,setF]=useState(user);
+  const [saving,setSaving]=useState(false);
+  const [changePw,setChangePw]=useState(false);
+  const [pw,setPw]=useState({cur:'',new:'',conf:''});
+  async function saveProfile(){
+    try{setSaving(true);const d=await api.put('/auth/me',f);setUser(d.user);toast.success('Profile updated!');setEdit(false);}
+    catch(e){toast.error(e.message);}
+    finally{setSaving(false);}
+  }
+  async function savePassword(){
+    if(pw.new!==pw.conf)return toast.error('New passwords do not match');
+    try{setSaving(true);await api.put('/auth/change-password',{current_password:pw.cur,new_password:pw.new});toast.success('Password changed!');setChangePw(false);setPw({cur:'',new:'',conf:''});}
+    catch(e){toast.error(e.message);}
+    finally{setSaving(false);}
+  }
+  return h('div',{className:'pg'},
+    h('div',{style:{background:'linear-gradient(135deg,var(--gd),var(--gm))',borderRadius:'20px',padding:'1.75rem',color:'#fff',marginBottom:'1.25rem',display:'flex',alignItems:'center',gap:'1.5rem'}},
+      h('div',{style:{width:68,height:68,borderRadius:'50%',background:'rgba(255,255,255,.2)',border:'3px solid rgba(255,255,255,.4)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.85rem',flexShrink:0}},'🌿'),
+      h('div',{style:{flex:1}},
+        h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.5rem',fontWeight:600}},user.name),
+        h('div',{style:{fontSize:'.76rem',color:'rgba(255,255,255,.65)',marginTop:'3px'}},(user.goals?.[0]||'Wellness Journey')+(user.country?' · '+user.country:'')),
+        h('div',{style:{display:'flex',gap:'2rem',marginTop:'.9rem'}},
+          [{v:user.plan||'free',l:'Plan'},{v:user.cycle_length||28,l:'Cycle days'},{v:user.age||'—',l:'Age'}].map(({v,l})=>h('div',{key:l,style:{textAlign:'center'}},h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.3rem',fontWeight:600,lineHeight:1}},v),h('div',{style:{fontSize:'.58rem',color:'rgba(255,255,255,.5)',textTransform:'uppercase',letterSpacing:'.07em',marginTop:'2px'}},l)))
+        )
+      ),
+      !edit&&h('button',{className:'btn',style:{background:'rgba(255,255,255,.15)',color:'#fff',padding:'9px 18px',fontSize:'.8rem',border:'none',borderRadius:'50px',cursor:'pointer'},onClick:()=>{setF(user);setEdit(true);}},'Edit Profile')
+    ),
+    h('div',{className:'g2'},
+      h('div',null,
+        edit&&h('div',{className:'card',style:{marginBottom:'1.1rem'}},
+          h('div',{className:'card-head'},h('div',{className:'card-title'},'Edit Profile')),
+          h('div',{className:'f-row'},
+            h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Full name'),h('input',{className:'f-in',value:f.name,onChange:ev=>setF({...f,name:ev.target.value})})),
+            h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Age'),h('input',{className:'f-in',type:'number',value:f.age||'',onChange:ev=>setF({...f,age:parseInt(ev.target.value)})}))
+          ),
+          h('div',{className:'f-row',style:{marginTop:'.75rem'}},
+            h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Country'),h('input',{className:'f-in',value:f.country||'',onChange:ev=>setF({...f,country:ev.target.value})})),
+            h('div',{className:'f-group',style:{marginBottom:0}},h('label',{className:'f-label'},'Cycle length (days)'),h('input',{className:'f-in',type:'number',min:20,max:45,value:f.cycle_length||28,onChange:ev=>setF({...f,cycle_length:parseInt(ev.target.value)})}))
+          ),
+          h('div',{style:{display:'flex',gap:'8px',justifyContent:'flex-end',marginTop:'.9rem'}},
+            h('button',{className:'btn btn-o btn-sm',onClick:()=>setEdit(false)},'Cancel'),
+            h('button',{className:'btn btn-g btn-sm',disabled:saving,onClick:saveProfile},saving?h('span',{className:'spinner'}):'Save changes')
+          )
+        ),
+        h('div',{className:'card',style:{marginBottom:'1.1rem'}},
+          h('div',{className:'card-head'},h('div',{className:'card-title'},'Health Profile')),
+          user.goals?.length>0&&h('div',{style:{marginBottom:'.75rem'}},h('div',{style:{fontSize:'.68rem',fontWeight:600,color:'var(--tmu)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:'.35rem'}},'Goals'),h('div',{style:{display:'flex',gap:'5px',flexWrap:'wrap'}},user.goals.map(g=>h('span',{key:g,className:'tag tg'},g)))),
+          user.symptoms?.length>0&&h('div',null,h('div',{style:{fontSize:'.68rem',fontWeight:600,color:'var(--tmu)',textTransform:'uppercase',letterSpacing:'.07em',marginBottom:'.35rem'}},'Tracked Symptoms'),h('div',{style:{display:'flex',gap:'5px',flexWrap:'wrap'}},user.symptoms.map(s=>h('span',{key:s,className:'tag tp'},s))))
+        ),
+        h('div',{className:'card'},
+          h('div',{className:'card-head'},h('div',{className:'card-title'},'Change Password')),
+          changePw
+            ? h('div',null,
+                h('div',{className:'f-group'},h('label',{className:'f-label'},'Current password'),h('input',{className:'f-in',type:'password',value:pw.cur,onChange:ev=>setPw({...pw,cur:ev.target.value})})),
+                h('div',{className:'f-group'},h('label',{className:'f-label'},'New password'),h('input',{className:'f-in',type:'password',value:pw.new,onChange:ev=>setPw({...pw,new:ev.target.value})})),
+                h('div',{className:'f-group'},h('label',{className:'f-label'},'Confirm new password'),h('input',{className:'f-in',type:'password',value:pw.conf,onChange:ev=>setPw({...pw,conf:ev.target.value})})),
+                h('div',{style:{display:'flex',gap:'8px',justifyContent:'flex-end'}},h('button',{className:'btn btn-o btn-sm',onClick:()=>setChangePw(false)},'Cancel'),h('button',{className:'btn btn-g btn-sm',disabled:saving,onClick:savePassword},saving?h('span',{className:'spinner'}):'Change password'))
+              )
+            : h('button',{className:'btn btn-o btn-sm',onClick:()=>setChangePw(true)},'Change password')
+        )
+      ),
+      h('div',null,
+        h('div',{className:'card'},
+          h('div',{className:'card-head'},h('div',{className:'card-title'},'Account')),
+          [['📧','Email',user.email],['🌍','Country',user.country||'Not set'],['📅','Member since',new Date(user.created_at).toLocaleDateString('en-GB',{month:'long',year:'numeric'})],['💎','Plan',user.plan||'Free']].map(([ico,l,v])=>h('div',{key:l,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'.6rem 0',borderBottom:'1px solid var(--bdd)'}},h('span',{style:{display:'flex',alignItems:'center',gap:'8px',fontSize:'.8rem',color:'var(--tmu)'}},ico,' ',l),h('span',{style:{fontSize:'.82rem',fontWeight:500,color:'var(--tx)'}},v)))
+        )
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN PANEL
+═══════════════════════════════════════════════════════════════ */
+function AdminPanel({user,onExit,toast}){
+  const [page,setPage]=useState('dashboard');
+  const NAV=[{id:'dashboard',l:'Dashboard',ic:'📊',s:'Overview'},{id:'users',l:'Users',ic:'👥',s:'Overview'},{id:'moderation',l:'Moderation',ic:'🛡️',s:'Overview'},{id:'broadcasts',l:'Notifications',ic:'🔔',s:'Tools'},{id:'analytics',l:'Analytics',ic:'📈',s:'Tools'}];
+  return h('div',{style:{display:'flex',height:'100vh',overflow:'hidden'}},
+    h('div',{className:'sidebar',style:{background:'#0F1E09'}},
+      h('div',{className:'sb-top'},h('div',{className:'sb-logo-row'},h(NiaLogo,{scale:.85,light:true})),h('div',{className:'sb-admin-badge'},'Admin Panel')),
+      h('div',{className:'sb-nav'},
+        [...new Set(NAV.map(n=>n.s))].map(sec=>h('div',{key:sec},h('div',{className:'sb-section'},sec),NAV.filter(n=>n.s===sec).map(n=>h('div',{key:n.id,className:`sb-item${page===n.id?' active':''}`,onClick:()=>setPage(n.id)},h('span',{className:'sb-ico'},n.ic),h('span',{className:'sb-lbl'},n.l)))))
+      ),
+      h('div',{className:'sb-foot'},h('div',{className:'sb-user-row'},h('div',{className:'sb-av'},'AD'),h('div',null,h('div',{className:'sb-uname'},user.name),h('div',{className:'sb-urole'},'Administrator'))),h('button',{style:{marginTop:'.75rem',width:'100%',padding:'7px',background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:'rgba(255,255,255,.5)',borderRadius:'8px',cursor:'pointer',fontSize:'.73rem'},onClick:onExit},'← Exit admin'))
+    ),
+    h('div',{className:'main'},
+      h('div',{className:'topbar'},
+        h('div',null,h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.35rem',fontWeight:600,color:'var(--tx)'}},'Admin Dashboard'),h('div',{style:{fontSize:'.7rem',color:'var(--tmu)'}},'niA Health Platform')),
+        h('div',{className:'tb-right'},h('span',{style:{fontSize:'.75rem',color:'var(--tmu)'}},user.email))
+      ),
+      h('div',{className:'content-area'},
+        page==='dashboard'&&h(AdminDashboard,{toast}),
+        page==='users'&&h(AdminUsers,{toast}),
+        page==='moderation'&&h(AdminModeration,{toast}),
+        page==='broadcasts'&&h(AdminBroadcasts,{toast}),
+        page==='analytics'&&h(AdminAnalytics),
+        page==='payments'&&h(PaymentSettings,{toast}),
+      ),
+      h('footer',null,h('div',{className:'ft-l'},'niA Health Admin'),h('div',{className:'ft-r'},h('span',{className:'ft-link',onClick:onExit},'← Back to app')))
+    )
+  );
+}
+
+function AdminDashboard({toast}){
+  const {data,loading}=useApi(()=>api.get('/admin/stats'));
+  if(loading)return h('div',{className:'loading-center'},h('div',{className:'spinner spinner-lg'}));
+  if(!data)return null;
+  const {users,posts,messages,newToday,logsToday,growth,plans,countries,symptoms}=data;
+  const maxGrowth=growth?.length?Math.max(...growth.map(g=>parseInt(g.signups))):1;
+  return h('div',{className:'pg'},
+    h('div',{className:'g4',style:{marginBottom:'1.25rem'}},
+      [{ico:'👥',bg:'var(--gp)',l:'Total Users',v:users?.active||0,delta:'Active accounts'},{ico:'📱',bg:'var(--bp)',l:'Active Today',v:logsToday?.count||0,delta:'Users who logged'},{ico:'💬',bg:'var(--lv)',l:'AI Messages (24h)',v:messages?.total||0,delta:'Conversations'},{ico:'🆕',bg:'var(--cp)',l:'New Today',v:newToday?.count||0,delta:'New registrations'}].map(({ico,bg,l,v,delta})=>
+        h('div',{key:l,className:'stat-card'},h('div',{className:'sc-ico',style:{background:bg}},ico),h('div',{className:'sc-num'},v),h('div',{className:'sc-lbl'},l),h('div',{style:{fontSize:'.65rem',color:'var(--tmu)',marginTop:2}},delta))
+      )
+    ),
+    h('div',{className:'g2'},
+      growth?.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'User Growth (last 12 weeks)')),
+        h('div',{className:'bar-chart'},growth.map((g,i)=>h('div',{key:i,className:'bc-wrap'},h('div',{className:'bc-bar',style:{height:Math.round(parseInt(g.signups)/maxGrowth*100)+'%',background:i===growth.length-1?'var(--gs)':'var(--gp)'}}),h('div',{className:'bc-lbl'},new Date(g.week).toLocaleDateString([],{month:'short',day:'numeric'})))))
+      ),
+      plans?.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Subscription Plans')),
+        plans.map(p=>h('div',{key:p.plan,style:{display:'flex',justifyContent:'space-between',alignItems:'center',padding:'.6rem 0',borderBottom:'1px solid var(--bdd)'}},h('span',{className:`tag ${p.plan==='premium'?'tp':p.plan==='wellness'?'tg':'tb2'}`},p.plan||'free'),h('span',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:600,color:'var(--gd)'}},p.count)))
+      )
+    ),
+    h('div',{className:'g2'},
+      countries?.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Top Countries')),
+        countries.slice(0,7).map((c,i)=>h('div',{key:c.country||i,className:'sym-row'},h('div',{className:'sym-name'},c.country||'Unknown'),h('div',{className:'sym-bar-w'},h('div',{className:'sym-bar-f',style:{width:(c.count/countries[0].count*100)+'%'}})),h('div',{className:'sym-val'},c.count)))
+      ),
+      symptoms?.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Most Common Symptoms')),
+        symptoms.slice(0,7).map((s,i)=>h('div',{key:s.symptom,className:'sym-row'},h('div',{className:'sym-name'},s.symptom),h('div',{className:'sym-bar-w'},h('div',{className:'sym-bar-f',style:{width:(s.count/symptoms[0].count*100)+'%'}})),h('div',{className:'sym-val'},s.count)))
+      )
+    ),
+    h('div',{className:'card'},
+      h('div',{className:'card-head'},h('div',{className:'card-title'},'Posts Awaiting Moderation'),h('div',{style:{display:'flex',gap:'8px'}},h('span',{className:'tag tr'},posts?.pending||0,' pending'))),
+      h('div',{style:{fontSize:'.82rem',color:'var(--tmu)',padding:'.5rem 0'}},'Go to Moderation to review and approve community posts.')
+    )
+  );
+}
+
+function AdminUsers({toast}){
+  const [search,setSearch]=useState('');const [plan,setPlan]=useState('');
+  const {data,loading,reload}=useApi(()=>api.get(`/admin/users?search=${encodeURIComponent(search)}&plan=${plan}`),[search,plan]);
+  const [sel,setSel]=useState(null);
+  async function updateUser(id,updates){try{await api.put(`/admin/users/${id}`,updates);toast.success('User updated');reload();}catch(e){toast.error(e.message);}}
+  const users=data?.users||[];
+  return h('div',{className:'pg'},
+    h('div',{style:{marginBottom:'1.1rem',display:'flex',gap:'1rem'}},
+      h('input',{className:'f-in',style:{flex:1},placeholder:'Search by name or email...',value:search,onChange:ev=>setSearch(ev.target.value)}),
+      h('select',{className:'f-sel',style:{width:160},value:plan,onChange:ev=>setPlan(ev.target.value)},h('option',{value:''},'All plans'),['free','wellness','premium'].map(p=>h('option',{key:p,value:p},p)))
+    ),
+    loading?h('div',{className:'loading-center'},h('div',{className:'spinner'})):
+    h('div',{className:'card'},
+      h('div',{style:{fontSize:'.75rem',color:'var(--tmu)',marginBottom:'.75rem'}},users.length+' users shown of '+data?.total+' total'),
+      h('table',{className:'a-tbl'},
+        h('thead',null,h('tr',null,['User','Country','Plan','Streak','Logs','Active','Actions'].map(hd=>h('th',{key:hd},hd)))),
+        h('tbody',null,users.map(u=>h('tr',{key:u.id},
+          h('td',null,h('div',{style:{display:'flex',alignItems:'center',gap:'8px'}},h('div',{className:'a-av'},u.name.slice(0,2).toUpperCase()),h('div',null,h('div',{style:{fontWeight:500,fontSize:'.83rem'}},u.name),h('div',{style:{fontSize:'.68rem',color:'var(--tmu)'}},u.email)))),
+          h('td',null,u.country||'—'),
+          h('td',null,h('span',{className:`tag ${u.plan==='premium'?'tp':u.plan==='wellness'?'tg':'tb2'}`},u.plan||'free')),
+          h('td',null,'🔥 '+(u.streak||0)),
+          h('td',null,u.log_count||0),
+          h('td',null,h('span',{style:{display:'flex',alignItems:'center',gap:'5px',fontSize:'.75rem'}},h('span',{style:{width:7,height:7,borderRadius:'50%',background:u.is_active?'var(--gs)':'var(--tmu)',display:'inline-block'}}),u.is_active?'Active':'Inactive')),
+          h('td',null,h('div',{style:{display:'flex',gap:'5px'}},
+            h('button',{className:'btn btn-o btn-xs',onClick:()=>updateUser(u.id,{plan:u.plan==='wellness'?'free':'wellness'})},u.plan==='wellness'?'Downgrade':'Upgrade'),
+            u.is_active&&h('button',{className:'btn btn-xs btn-danger',onClick:()=>{if(confirm('Suspend this user?'))updateUser(u.id,{is_active:false});}},'Suspend')
+          ))
+        )))
+      )
+    )
+  );
+}
+
+function AdminModeration({toast}){
+  const [filter,setFilter]=useState('');
+  const {data,loading,reload}=useApi(()=>api.get('/admin/posts'+(filter?'?status='+filter:'')),[filter]);
+  const posts=data?.posts||[];
+  async function moderate(id,status){try{await api.put(`/admin/posts/${id}/moderate`,{status});toast.success('Post '+status);reload();}catch(e){toast.error(e.message);}}
+  return h('div',{className:'pg'},
+    h('div',{style:{display:'flex',gap:'7px',marginBottom:'1.1rem'}},['','pending','approved','rejected'].map(s=>h('div',{key:s,className:`chip${filter===s?' on':''}`,onClick:()=>setFilter(s)},{'':"All",'pending':'⏳ Pending','approved':'✅ Approved','rejected':'❌ Rejected'}[s]||s))),
+    loading?h('div',{className:'loading-center'},h('div',{className:'spinner'})):
+    posts.length===0
+      ? h('div',{className:'card'},h('div',{className:'empty-state'},h('span',{className:'empty-icon'},'✅'),h('div',{className:'empty-title'},'No posts found'),h('div',{className:'empty-sub'},'No posts matching this filter.')))
+      : posts.map(p=>h('div',{key:p.id,style:{background:'var(--wh)',borderRadius:'14px',padding:'1rem',border:'1px solid var(--bdd)',borderLeft:'3px solid '+({pending:'var(--yl)',approved:'var(--gs)',rejected:'var(--co)'}[p.status]||'var(--bd)'),marginBottom:'.75rem'}},
+          h('div',{style:{display:'flex',alignItems:'center',gap:'8px',marginBottom:'.55rem'}},
+            h('div',{className:'a-av'},p.author_name.slice(0,2).toUpperCase()),
+            h('span',{style:{fontSize:'.82rem',fontWeight:500}},p.author_name),
+            h('span',{className:`tag ${p.status==='approved'?'tg':p.status==='pending'?'ty':'tr'}`},p.status),
+            h('span',{className:'tag tb2'},p.tag||'—'),
+            h('span',{style:{marginLeft:'auto',fontSize:'.62rem',color:'var(--tmu)'}},new Date(p.created_at).toLocaleString('en-GB',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})),
+            p.reports_count>0&&h('span',{className:'tag tr'},'🚩 '+p.reports_count+' reports')
+          ),
+          h('div',{style:{fontSize:'.82rem',color:'var(--tm)',lineHeight:1.6,marginBottom:'.65rem'}},p.content),
+          h('div',{style:{display:'flex',gap:'7px'}},
+            p.status!=='approved'&&h('button',{className:'btn btn-g btn-xs',onClick:()=>moderate(p.id,'approved')},'✓ Approve'),
+            p.status!=='rejected'&&h('button',{className:'btn btn-xs btn-danger',onClick:()=>moderate(p.id,'rejected')},'✗ Reject')
+          )
+        ))
+  );
+}
+
+function AdminBroadcasts({toast}){
+  const {data:bdata,reload}=useApi(()=>api.get('/admin/broadcasts'));
+  const [f,setF]=useState({title:'',body:'',target:'all'});const [sending,setSending]=useState(false);
+  async function send(){
+    if(!f.title||!f.body)return toast.error('Title and message are required');
+    try{setSending(true);const r=await api.post('/admin/notifications/broadcast',f);toast.success('Sent to '+r.recipientCount+' users!');setF({title:'',body:'',target:'all'});reload();}
+    catch(e){toast.error(e.message);}
+    finally{setSending(false);}
+  }
+  const broadcasts=bdata?.broadcasts||[];
+  return h('div',{className:'pg'},
+    h('div',{className:'g2'},
+      h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Send Notification')),
+        h('div',{className:'f-group'},h('label',{className:'f-label'},'Target audience'),h('select',{className:'f-sel',value:f.target,onChange:ev=>setF({...f,target:ev.target.value})},[['all','All users'],['free','Free users'],['wellness','Wellness plan'],['premium','Premium users'],['pcos','PCOS users (goal: Manage PCOS)']].map(([v,l])=>h('option',{key:v,value:v},l)))),
+        h('div',{className:'f-group'},h('label',{className:'f-label'},'Title'),h('input',{className:'f-in',placeholder:'e.g. 💧 Hydration Reminder',value:f.title,onChange:ev=>setF({...f,title:ev.target.value})})),
+        h('div',{className:'f-group'},h('label',{className:'f-label'},'Message'),h('textarea',{className:'f-ta',rows:4,placeholder:'Write your notification message...',value:f.body,onChange:ev=>setF({...f,body:ev.target.value})})),
+        (f.title||f.body)&&h('div',{style:{background:'var(--tx)',borderRadius:'12px',padding:'.85rem',marginBottom:'.75rem'}},h('div',{style:{fontSize:'.78rem',fontWeight:600,color:'#fff',marginBottom:'3px'}},f.title||'Notification title'),h('div',{style:{fontSize:'.72rem',color:'rgba(255,255,255,.6)',lineHeight:1.5}},f.body||'Your message...')),
+        h('button',{className:'btn btn-g',onClick:send,disabled:sending},sending?h('span',{className:'spinner'}):'Send Notification 🚀')
+      ),
+      h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Broadcast History')),
+        broadcasts.length===0?h('div',{style:{fontSize:'.82rem',color:'var(--tmu)',padding:'.5rem 0'}},'No broadcasts sent yet.'):
+        broadcasts.map(b=>h('div',{key:b.id,style:{display:'flex',alignItems:'center',gap:'10px',padding:'.7rem 0',borderBottom:'1px solid var(--bdd)'}},
+          h('div',{style:{width:34,height:34,background:'var(--gp)',borderRadius:'9px',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'.9rem',flexShrink:0}},'📣'),
+          h('div',{style:{flex:1}},h('div',{style:{fontSize:'.82rem',fontWeight:500,color:'var(--tx)'}},b.title),h('div',{style:{fontSize:'.7rem',color:'var(--tmu)'}},b.target_audience+' · '+new Date(b.sent_at).toLocaleDateString())),
+          h('div',{style:{textAlign:'right'}},h('div',{style:{fontSize:'.75rem',fontWeight:600,color:'var(--gd)'}},b.recipient_count+' sent'))
+        ))
+      )
+    )
+  );
+}
+
+function AdminAnalytics(){
+  const {data,loading}=useApi(()=>api.get('/admin/stats'));
+  if(loading)return h('div',{className:'loading-center'},h('div',{className:'spinner spinner-lg'}));
+  if(!data)return null;
+  const {growth=[],plans=[],countries=[],symptoms=[]}=data;
+  const maxGrowth=growth.length?Math.max(...growth.map(g=>parseInt(g.signups))):1;
+  return h('div',{className:'pg'},
+    h('div',{className:'g2'},
+      growth.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Weekly Signups')),
+        h('div',{className:'bar-chart'},growth.map((g,i)=>h('div',{key:i,className:'bc-wrap'},h('div',{className:'bc-bar',style:{height:Math.round(parseInt(g.signups)/maxGrowth*100)+'%',background:'var(--gs)'}}),h('div',{className:'bc-lbl'},new Date(g.week).toLocaleDateString([],{month:'short',day:'numeric'})))))
+      ),
+      plans.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Plan Distribution')),
+        plans.map(p=>h('div',{key:p.plan,style:{padding:'.6rem 0',borderBottom:'1px solid var(--bdd)'}},
+          h('div',{style:{display:'flex',justifyContent:'space-between',marginBottom:'4px'}},h('span',{style:{fontSize:'.82rem',color:'var(--tx)',textTransform:'capitalize'}},p.plan||'free'),h('span',{style:{fontSize:'.82rem',fontWeight:600,color:'var(--gd)'}},p.count)),
+          h('div',{style:{height:'5px',background:'var(--gg)',borderRadius:'3px',overflow:'hidden'}},h('div',{style:{height:'100%',width:(p.count/plans[0]?.count*100)+'%',background:'var(--gs)',borderRadius:'3px'}}))
+        ))
+      )
+    ),
+    h('div',{className:'g2'},
+      countries.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Users by Country')),
+        countries.map((c,i)=>h('div',{key:c.country||i,className:'sym-row'},h('div',{className:'sym-name'},c.country||'Unknown'),h('div',{className:'sym-bar-w'},h('div',{className:'sym-bar-f',style:{width:(c.count/countries[0].count*100)+'%'}})),h('div',{className:'sym-val'},c.count)))
+      ),
+      symptoms.length>0&&h('div',{className:'card'},
+        h('div',{className:'card-head'},h('div',{className:'card-title'},'Most Reported Symptoms')),
+        symptoms.map((s,i)=>h('div',{key:s.symptom,className:'sym-row'},h('div',{className:'sym-name'},s.symptom),h('div',{className:'sym-bar-w'},h('div',{className:'sym-bar-f',style:{width:(s.count/symptoms[0].count*100)+'%'}})),h('div',{className:'sym-val'},s.count)))
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ADMIN LOGIN MODAL
+═══════════════════════════════════════════════════════════════ */
+function AdminLoginModal({onClose,onLogin}){
+  const [email,setEmail]=useState('');const [pass,setPass]=useState('');const [loading,setLoading]=useState(false);const [err,setErr]=useState('');
+  async function attempt(){
+    try{setLoading(true);setErr('');const d=await api.post('/auth/login',{email,password:pass});if(!d.user.is_admin)throw new Error('This account does not have admin access.');api.setToken(d.token);onLogin(d.user);}
+    catch(e){setErr(e.message);}
+    finally{setLoading(false);}
+  }
+  return h('div',{className:'modal-bg',onClick:ev=>{if(ev.target===ev.currentTarget)onClose();}},
+    h('div',{className:'modal'},
+      h('div',{style:{textAlign:'center',marginBottom:'1.5rem'}},h(NiaLogo,{scale:1.05})),
+      h('div',{className:'modal-title'},'Admin Access'),h('div',{className:'modal-sub'},'Sign in with your administrator account.'),
+      err&&h('div',{className:'alert alert-error'},'⚠️ ',err),
+      h('div',{className:'f-group'},h('label',{className:'f-label'},'Email'),h('input',{className:'f-in',type:'email',placeholder:'admin@niahealth.com',value:email,onChange:ev=>setEmail(ev.target.value),onKeyDown:ev=>ev.key==='Enter'&&attempt()})),
+      h('div',{className:'f-group'},h('label',{className:'f-label'},'Password'),h('input',{className:'f-in',type:'password',placeholder:'••••••••',value:pass,onChange:ev=>setPass(ev.target.value),onKeyDown:ev=>ev.key==='Enter'&&attempt()})),
+      h('div',{style:{display:'flex',gap:'8px'}},h('button',{className:'btn btn-o btn-sm',onClick:onClose},'Cancel'),h('button',{className:'btn btn-g btn-sm',style:{flex:1},disabled:loading,onClick:attempt},loading?h('span',{className:'spinner'}):'Sign in →'))
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════════════════════ */
+function Toasts({toasts}){
+  return h('div',{style:{position:'fixed',top:'1rem',right:'1rem',zIndex:9999,display:'flex',flexDirection:'column',gap:'8px'}},
+    toasts.map(t=>h('div',{key:t.id,style:{background:{success:'var(--gd)',error:'var(--err)',info:'var(--bl)'}[t.type]||'var(--tx)',color:'#fff',borderRadius:'12px',padding:'.75rem 1.1rem',fontSize:'.82rem',fontWeight:500,boxShadow:'0 8px 24px rgba(0,0,0,.2)',maxWidth:340,animation:'slideIn .25s ease'}},t.msg))
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   MAIN NAV CONFIG
+═══════════════════════════════════════════════════════════════ */
+const MAIN_NAV=[
+  {id:'home',l:'Home',ic:'🏠',sec:'Main'},
+  {id:'cycle',l:'Cycle Tracker',ic:'📅',sec:'Main'},
+  {id:'chat',l:'Chat with Nia',ic:'💬',sec:'Main'},
+  {id:'meals',l:'Meal Plans',ic:'🥗',sec:'Wellness'},
+  {id:'movement',l:'Movement',ic:'🏃‍♀️',sec:'Wellness'},
+  {id:'supplements',l:'Supplements',ic:'💊',sec:'Wellness'},
+  {id:'log',l:'Daily Log',ic:'📝',sec:'Tracking'},
+  {id:'journey',l:'My Journey',ic:'📈',sec:'Tracking'},
+  {id:'community',l:'Community',ic:'🌸',sec:'Community'},
+  {id:'notifications',l:'Notifications',ic:'🔔',sec:'Account'},
+  {id:'profile',l:'Profile',ic:'👤',sec:'Account'},
+];
+
+/* ═══════════════════════════════════════════════════════════════
+   MEALS / MOVEMENT (static content, evidence-based)
+═══════════════════════════════════════════════════════════════ */
+function MealsScreen(){
+  const [tab,setTab]=useState('Breakfast');
+  const MEALS={
+    Breakfast:[{ico:'🍳',n:'PCOS Protein Bowl',d:'Scrambled eggs with sukuma wiki, cherry tomatoes, and avocado. Stabilises blood sugar and provides hormone-building protein.',tags:['PCOS','High Protein','Kenyan'],cal:420,pro:'28g',carb:'32g'},{ico:'🫘',n:'Githeri Power Bowl',d:'Classic Kenyan githeri with spinach and a boiled egg. Rich in iron, fiber, and complex carbohydrates for sustained energy.',tags:['Kenyan','Iron-rich','PCOS'],cal:450,pro:'22g',carb:'58g'},{ico:'🥣',n:'Chia Coconut Bowl',d:'Chia seeds in coconut milk topped with fresh mango and pumpkin seeds. Anti-inflammatory and hormone-supporting.',tags:['Anti-inflammatory','Vegan','Quick'],cal:380,pro:'12g',carb:'48g'}],
+    Lunch:[{ico:'🍲',n:'Ugali & Tilapia',d:'Ugali wa mtama with sautéed sukuma wiki and grilled tilapia. A hormone-balancing Kenyan classic with omega-3s and zinc.',tags:['Kenyan','PCOS','Omega-3'],cal:520,pro:'35g',carb:'55g'},{ico:'🥗',n:'Hormone Balance Bowl',d:'Quinoa with roasted chickpeas, cucumber, sweet potato, and tahini dressing. Supports progesterone production.',tags:['Hormone support','Vegan'],cal:480,pro:'18g',carb:'62g'},{ico:'🍛',n:'Lentil Coconut Curry',d:'Red lentils in coconut milk with turmeric, ginger, and coriander. Anti-inflammatory and iron-rich.',tags:['Anti-inflammatory','Iron-rich'],cal:510,pro:'20g',carb:'70g'}],
+    Dinner:[{ico:'🐟',n:'Baked Salmon & Veggies',d:'Oven-baked salmon with roasted broccoli and sweet potato. Omega-3s reduce inflammation and support hormonal balance.',tags:['Omega-3','Anti-inflammatory'],cal:490,pro:'42g',carb:'35g'},{ico:'🍗',n:'Grilled Chicken & Mukimo',d:'Rosemary chicken with traditional Kenyan mukimo (mashed potatoes, peas, and greens). Balanced and filling.',tags:['Kenyan','High Protein'],cal:530,pro:'40g',carb:'50g'},{ico:'🫘',n:'Black Bean & Kale Soup',d:'Hearty soup with black beans, kale, and spices. High in folate, magnesium, and fiber for PMS support.',tags:['Magnesium','High Fiber'],cal:350,pro:'18g',carb:'48g'}],
+    Snacks:[{ico:'🥜',n:'Pumpkin Seed Mix',d:'Pumpkin seeds with dark chocolate chips. Zinc-rich for testosterone regulation and hormone support.',tags:['Zinc','PCOS'],cal:180,pro:'8g',carb:'16g'},{ico:'🍌',n:'Banana & Almond Butter',d:'Magnesium and potassium ease muscle cramps and lift mood — especially in the luteal phase.',tags:['Magnesium','Energy'],cal:200,pro:'5g',carb:'30g'},{ico:'🍫',n:'Dark Chocolate & Dates',d:'2 squares of 85% dark chocolate with 2 Medjool dates. Antioxidants and natural sweetness without blood sugar spikes.',tags:['Antioxidant'],cal:160,pro:'3g',carb:'24g'}],
+  };
+  return h('div',{className:'pg'},
+    h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,marginBottom:'.25rem'}},'Meal Plans 🥗'),
+    h('div',{style:{fontSize:'.8rem',color:'var(--tmu)',marginBottom:'1.1rem'}},'PCOS-friendly, hormone-balancing meals — including Kenyan and African foods.'),
+    h('div',{style:{display:'flex',gap:'7px',marginBottom:'1.1rem',flexWrap:'wrap'}},Object.keys(MEALS).map(t=>h('div',{key:t,className:`chip${tab===t?' on':''}`,onClick:()=>setTab(t)},t))),
+    h('div',{className:'g3'},MEALS[tab].map(m=>h('div',{key:m.n,style:{background:'var(--wh)',borderRadius:'16px',border:'1px solid var(--bdd)',overflow:'hidden'}},
+      h('div',{style:{height:'90px',display:'flex',alignItems:'center',justifyContent:'center',background:'var(--gg)',fontSize:'3rem'}},m.ico),
+      h('div',{style:{padding:'.9rem'}},
+        h('div',{style:{fontSize:'.88rem',fontWeight:600,color:'var(--tx)',marginBottom:'.25rem'}},m.n),
+        h('div',{style:{fontSize:'.75rem',color:'var(--tmu)',lineHeight:1.55,marginBottom:'.6rem'}},m.d),
+        h('div',{style:{display:'flex',gap:'5px',flexWrap:'wrap',marginBottom:'.6rem'}},m.tags.map(t=>h('span',{key:t,className:'tag tg'},t))),
+        h('div',{style:{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:'4px'}},
+          [{v:m.cal,l:'cal'},{v:m.pro,l:'protein'},{v:m.carb,l:'carbs'}].map(({v,l})=>h('div',{key:l,style:{textAlign:'center',background:'var(--gg)',borderRadius:'8px',padding:'5px 3px'}},h('div',{style:{fontSize:'.8rem',fontWeight:600,color:'var(--gd)'}},v),h('div',{style:{fontSize:'.58rem',color:'var(--tmu)'}},l)))
+        )
+      )
+    )))
+  );
+}
+
+function MovementScreen({user}){
+  const {data:cycleData}=useApi(()=>api.get('/cycle/current'));
+  const phase=cycleData?.phase?.phase||'Follicular';
+  const WORKOUTS={Menstrual:[{ic:'🧘‍♀️',n:'Yin Yoga',s:'Gentle stretching & breathwork',d:'20 min'},{ic:'🚶‍♀️',n:'Slow Walk',s:'Low impact outdoor walk',d:'25 min'},{ic:'😮‍💨',n:'Pranayama',s:'Stress-reducing breathwork',d:'10 min'}],Follicular:[{ic:'🏊‍♀️',n:'Swimming',s:'Full body, low impact',d:'30 min'},{ic:'🚴‍♀️',n:'Cycling',s:'Moderate cardio',d:'35 min'},{ic:'💃',n:'Dance Workout',s:'Fun cardio routine',d:'30 min'}],Ovulation:[{ic:'🏋️‍♀️',n:'Strength Training',s:'Weights or resistance bands',d:'45 min'},{ic:'🏃‍♀️',n:'HIIT Run',s:'High intensity intervals',d:'25 min'},{ic:'🤸‍♀️',n:'Functional Training',s:'Full body compound moves',d:'40 min'}],Luteal:[{ic:'🧘‍♀️',n:'Restorative Yoga',s:'Gentle poses and relaxation',d:'30 min'},{ic:'🚶‍♀️',n:'Nature Walk',s:'Calming outdoor walk',d:'30 min'},{ic:'🏊‍♀️',n:'Easy Swimming',s:'Relaxed laps',d:'25 min'}]};
+  const ws=WORKOUTS[phase]||WORKOUTS.Follicular;
+  const [done,setDone]=useState([]);
+  const phaseCol={Menstrual:'#E05A3A',Follicular:'#4A8A2E',Ovulation:'#7DBE57',Luteal:'#7C5CBF'};
+  return h('div',{className:'pg'},
+    h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.8rem',fontWeight:600,marginBottom:'.25rem'}},'Movement 🏃‍♀️'),
+    h('div',{style:{fontSize:'.8rem',color:'var(--tmu)',marginBottom:'1.1rem'}},'Workouts synced to your cycle phase — train smarter, not harder.'),
+    h('div',{style:{background:phaseCol[phase]||'var(--gd)',borderRadius:'16px',padding:'1.1rem 1.3rem',color:'#fff',marginBottom:'1.1rem',display:'flex',alignItems:'center',gap:'1rem'}},
+      h('div',null,h('div',{style:{fontSize:'.6rem',textTransform:'uppercase',letterSpacing:'.1em',color:'rgba(255,255,255,.6)',marginBottom:'3px'}},'Phase Recommendation'),h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.2rem',fontWeight:600}},phase+' Phase Workouts'),h('div',{style:{fontSize:'.78rem',color:'rgba(255,255,255,.72)',lineHeight:1.5,marginTop:'.25rem'}},'Based on your cycle data, these workouts are optimal for your body right now.'))
+    ),
+    h('div',{className:'g3'},ws.map(w=>h('div',{key:w.n,style:{background:'var(--wh)',borderRadius:'16px',border:'1px solid var(--bdd)',padding:'1rem',display:'flex',flexDirection:'column',gap:'.75rem'}},
+      h('div',{style:{display:'flex',alignItems:'center',gap:'11px'}},
+        h('div',{style:{width:46,height:46,borderRadius:'13px',background:'var(--gp)',display:'flex',alignItems:'center',justifyContent:'center',fontSize:'1.25rem'}},w.ic),
+        h('div',null,h('div',{style:{fontSize:'.88rem',fontWeight:500,color:'var(--tx)'}},w.n),h('div',{style:{fontSize:'.72rem',color:'var(--tmu)',marginTop:'2px'}},w.s)),
+        h('div',{style:{marginLeft:'auto',fontSize:'.8rem',fontWeight:600,color:'var(--gd)'}},w.d)
+      ),
+      h('button',{style:{width:'100%',padding:'9px',background:done.includes(w.n)?'var(--gd)':'var(--gp)',border:'none',borderRadius:'10px',fontFamily:'inherit',fontSize:'.8rem',fontWeight:500,color:done.includes(w.n)?'#fff':'var(--gd)',cursor:'pointer',transition:'all .18s'},onClick:()=>setDone(done.includes(w.n)?done:[...done,w.n])},done.includes(w.n)?'✅ Completed!':'Start →')
+    )))
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   TOPBAR COMPONENT
+═══════════════════════════════════════════════════════════════ */
+const PAGE_TITLES = {
+  home:'Home',cycle:'Cycle Tracker',chat:'Chat with Nia',log:'Daily Log',
+  journey:'My Journey',community:'Community',meals:'Meal Plans',
+  movement:'Movement',supplements:'Supplements',notifications:'Notifications',profile:'Profile'
+};
+function Topbar({user,score,setPage,showNotifs,setShowNotifs}){
+  const page_ctx = React.useContext ? null : null;
+  const hr=new Date().getHours();
+  const greet=hr<12?'Good morning':hr<17?'Good afternoon':'Good evening';
+  const circ=2*Math.PI*16;
+  return h('div',{className:'topbar'},
+    h('div',{className:'tb-left'},
+      h('div',{style:{fontFamily:"'Cormorant Garamond',serif",fontSize:'1.35rem',fontWeight:600,color:'var(--tx)',lineHeight:1}},
+        greet+', '+(user.name?.split(' ')[0]||'Beautiful')+' 🌿'
+      ),
+      h('div',{style:{fontSize:'.68rem',color:'var(--tmu)',marginTop:'2px'}},
+        new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'})
+      )
+    ),
+    h('div',{className:'tb-right'},
+      h('div',{className:'tb-score',onClick:()=>setPage('journey')},
+        h('svg',{width:38,height:38,viewBox:'0 0 38 38',style:{transform:'rotate(-90deg)'}},
+          h('circle',{cx:19,cy:19,r:16,fill:'none',stroke:'var(--gl)',strokeWidth:4}),
+          h('circle',{cx:19,cy:19,r:16,fill:'none',stroke:'var(--gd)',strokeWidth:4,
+            strokeDasharray:circ,strokeDashoffset:circ-(circ*(score/100)),strokeLinecap:'round'})
+        ),
+        h('div',null,
+          h('div',{className:'tb-score-n'},score||'—'),
+          h('div',{className:'tb-score-l'},'Score')
+        )
+      ),
+      h('div',{className:'tb-icon',onClick:()=>setPage('notifications'),title:'Notifications'},
+        '🔔',
+        h('div',{className:'notif-badge'})
+      ),
+      h('div',{className:'tb-icon',onClick:()=>setPage('profile'),title:'Profile',
+        style:{background:'var(--gd)',color:'#fff',fontWeight:700,fontSize:'.75rem'}},
+        (user.name||'U').slice(0,2).toUpperCase()
+      )
+    )
+  );
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   PAYMENT SETTINGS SCREEN (Admin)
+═══════════════════════════════════════════════════════════════ */
+function PaymentSettings({toast}) {
+  const [settings, setSettings] = React.useState({});
+  const [revealed, setRevealed] = React.useState({});
+  const [edited, setEdited] = React.useState({});
+  const [saving, setSaving] = React.useState(false);
+  const [revenue, setRevenue] = React.useState(null);
+
+  React.useEffect(() => {
+    api.get('/payments/settings').then(d => setSettings(d.settings)).catch(() => {});
+    api.get('/payments/revenue').then(d => setRevenue(d)).catch(() => {});
+  }, []);
+
+  function setValue(key, val) { setEdited(e => ({...e, [key]: val})); }
+  function getCurrentVal(key) { return edited[key] !== undefined ? edited[key] : (settings[key]?.value || ''); }
+  function toggleReveal(key) { setRevealed(r => ({...r, [key]: !r[key]})); }
+
+  async function saveSettings() {
+    if (!Object.keys(edited).length) return toast.info('No changes to save.');
+    try {
+      setSaving(true);
+      await api.put('/payments/settings', edited);
+      // Refresh settings
+      const d = await api.get('/payments/settings');
+      setSettings(d.settings);
+      setEdited({});
+      toast.success('Payment settings saved securely.');
+    } catch(e) { toast.error(e.message); }
+    finally { setSaving(false); }
+  }
+
+  const fields = [
+    { key: 'paystack_secret_key',  label: 'Paystack Secret Key',  sensitive: true,  hint: 'Starts with sk_live_ or sk_test_', placeholder: 'sk_live_...' },
+    { key: 'paystack_public_key',  label: 'Paystack Public Key',   sensitive: true,  hint: 'Starts with pk_live_ or pk_test_', placeholder: 'pk_live_...' },
+    { key: 'currency',             label: 'Primary Currency',       sensitive: false, placeholder: 'KES' },
+    { key: 'business_name',        label: 'Business Name',          sensitive: false, placeholder: 'niA Health' },
+    { key: 'support_email',        label: 'Support Email',          sensitive: false, placeholder: 'support@niahealth.com' },
+    { key: 'wellness_price_kes',   label: 'Wellness Price (KES)',    sensitive: false, placeholder: '500' },
+    { key: 'premium_price_kes',    label: 'Premium Price (KES)',     sensitive: false, placeholder: '1200' },
+    { key: 'wellness_price_usd',   label: 'Wellness Price (USD)',    sensitive: false, placeholder: '5' },
+    { key: 'premium_price_usd',    label: 'Premium Price (USD)',     sensitive: false, placeholder: '12' },
+  ];
+
+  return h('div', {className: 'screen'},
+    // Revenue cards
+    revenue && h('div', {className: 'revenue-cards'},
+      h('div', {className: 'revenue-card'},
+        h('div', {className: 'rc-label'}, 'Total Revenue'),
+        h('div', {className: 'rc-value'}, 'KES ' + (revenue.total || 0).toLocaleString()),
+        h('div', {className: 'rc-sub'}, 'All time')
+      ),
+      h('div', {className: 'revenue-card', style: {background: 'linear-gradient(135deg,#2A5FAA,#4A7BC4)'}},
+        h('div', {className: 'rc-label'}, 'This Month'),
+        h('div', {className: 'rc-value'}, 'KES ' + (revenue.monthly || 0).toLocaleString()),
+        h('div', {className: 'rc-sub'}, 'Last 30 days')
+      ),
+      h('div', {className: 'revenue-card', style: {background: 'linear-gradient(135deg,#5C4A9A,#7C5CBF)'}},
+        h('div', {className: 'rc-label'}, 'Transactions'),
+        h('div', {className: 'rc-value'}, revenue.recent?.length || 0),
+        h('div', {className: 'rc-sub'}, 'Recent payments')
+      )
+    ),
+
+    // Settings form
+    h('div', {className: 'card'},
+      h('div', {className: 'card-header'},
+        h('div', null,
+          h('div', {className: 'card-title'}, '🔐 Payment Configuration'),
+          h('div', {className: 'card-sub'}, 'Paystack processes all payments — card, M-Pesa, bank transfer, USSD')
+        ),
+        Object.keys(edited).length > 0 && h('button', {className: 'btn btn-primary btn-sm', onClick: saveSettings, disabled: saving},
+          saving ? 'Saving...' : 'Save Changes'
+        )
+      ),
+      h('div', {className: 'pay-settings-grid'},
+        fields.map(f => h('div', {key: f.key, className: 'pay-field'},
+          h('div', {className: 'pay-label'},
+            f.label,
+            f.sensitive && h('span', {className: 'sensitive-badge'}, '🔒 SENSITIVE'),
+            settings[f.key]?.set
+              ? h('span', {className: 'pay-status-badge pay-status-set'}, '✓ Set')
+              : h('span', {className: 'pay-status-badge pay-status-empty'}, '! Not set')
+          ),
+          h('div', {className: 'pay-input-wrap'},
+            h('input', {
+              className: 'pay-input',
+              type: f.sensitive && !revealed[f.key] ? 'password' : 'text',
+              placeholder: revealed[f.key] ? f.placeholder : (settings[f.key]?.masked || f.placeholder),
+              value: getCurrentVal(f.key),
+              onChange: e => setValue(f.key, e.target.value),
+            }),
+            f.sensitive && h('button', {
+              className: 'pay-reveal ' + (revealed[f.key] ? 'revealed' : ''),
+              onClick: () => toggleReveal(f.key),
+              title: revealed[f.key] ? 'Hide' : 'Reveal'
+            }, revealed[f.key] ? '🔒 Hide' : '👁 Show')
+          ),
+          f.hint && h('div', {style: {fontSize: '.68rem', color: 'var(--tmu)', marginTop: '4px'}}, f.hint)
+        ))
+      ),
+      h('div', {style: {marginTop: '1.5rem', padding: '1rem', background: 'var(--gg)', borderRadius: '14px', fontSize: '.82rem', color: 'var(--tmu)', lineHeight: 1.6}},
+        '🌍 Paystack supports: Card (Visa/Mastercard), M-Pesa, Bank Transfer, USSD, Mobile Money. Get your keys at ',
+        h('a', {href: 'https://dashboard.paystack.com', target: '_blank', style: {color: 'var(--gd)'}}, 'dashboard.paystack.com')
+      )
+    ),
+
+    // Recent payments table
+    revenue?.recent?.length > 0 && h('div', {className: 'card'},
+      h('div', {className: 'card-header'},
+        h('div', {className: 'card-title'}, '💳 Recent Payments')
+      ),
+      h('div', {style: {overflowX: 'auto'}},
+        h('table', {className: 'payments-table'},
+          h('thead', null, h('tr', null,
+            ['User', 'Plan', 'Amount', 'Method', 'Status', 'Date'].map(col =>
+              h('th', {key: col}, col)
+            )
+          )),
+          h('tbody', null, revenue.recent.map(p =>
+            h('tr', {key: p.id},
+              h('td', null, h('div', null, h('strong', null, p.user_name), h('div', {style: {fontSize: '.72rem', color: 'var(--tmu)'}}, p.email))),
+              h('td', null, h('span', {className: 'tag tg'}, p.plan)),
+              h('td', null, h('strong', null, p.currency + ' ' + parseFloat(p.amount).toLocaleString())),
+              h('td', null, p.method || 'paystack'),
+              h('td', null, h('span', {className: 'status-pill status-' + p.status}, p.status)),
+              h('td', null, new Date(p.created_at).toLocaleDateString('en-GB', {day: 'numeric', month: 'short', year: 'numeric'}))
+            )
+          ))
+        )
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   UPGRADE MODAL (User pays for plan)
+═══════════════════════════════════════════════════════════════ */
+function UpgradeModal({onClose, toast, user, onUpgraded}) {
+  const [plan, setPlan] = React.useState('wellness');
+  const [loading, setLoading] = React.useState(false);
+
+  async function startPayment() {
+    try {
+      setLoading(true);
+      const data = await api.post('/payments/initialize', {plan});
+      // Redirect to Paystack checkout
+      window.location.href = data.authorization_url;
+    } catch(e) {
+      toast.error(e.message);
+      setLoading(false);
+    }
+  }
+
+  return h('div', {className: 'upgrade-modal-bg', onClick: e => { if(e.target === e.currentTarget) onClose(); }},
+    h('div', {className: 'upgrade-modal'},
+      h('div', {style: {display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem'}},
+        h('div', null,
+          h('div', {style: {fontFamily: "'Cormorant Garamond',serif", fontSize: '1.5rem', fontWeight: 600}}, 'Upgrade Your Plan'),
+          h('div', {style: {fontSize: '.8rem', color: 'var(--tmu)', marginTop: '2px'}}, 'Unlock full access to niA Health')
+        ),
+        h('button', {onClick: onClose, style: {background: 'none', border: 'none', fontSize: '1.2rem', cursor: 'pointer', color: 'var(--tmu)'}}, '×')
+      ),
+
+      h('div', {className: 'upgrade-plans'},
+        // Wellness Plan
+        h('div', {className: 'upgrade-plan' + (plan === 'wellness' ? ' selected' : ''), onClick: () => setPlan('wellness')},
+          h('div', {className: 'up-name'}, 'Wellness'),
+          h('div', {className: 'up-price'}, 'KES 500', h('span', null, '/mo')),
+          h('ul', {className: 'up-features'},
+            ['Unlimited Nia AI chat', 'Full meal plans', 'Phase workouts', 'Advanced analytics'].map(f =>
+              h('li', {key: f}, f)
+            )
+          )
+        ),
+        // Premium Plan
+        h('div', {className: 'upgrade-plan popular' + (plan === 'premium' ? ' selected' : ''), onClick: () => setPlan('premium')},
+          h('div', {className: 'up-name'}, 'Premium'),
+          h('div', {className: 'up-price'}, 'KES 1,200', h('span', null, '/mo')),
+          h('ul', {className: 'up-features'},
+            ['Everything in Wellness', 'Personalised supplements', 'Lab result guidance', 'Monthly health report'].map(f =>
+              h('li', {key: f}, f)
+            )
+          )
+        )
+      ),
+
+      h('div', {style: {background: 'var(--gg)', borderRadius: '14px', padding: '1rem', marginBottom: '1.25rem', fontSize: '.82rem', color: 'var(--tmu)', textAlign: 'center'}},
+        '🔒 Secure payment via Paystack. Supports M-Pesa, Card, Bank Transfer, USSD.'
+      ),
+
+      h('button', {className: 'btn btn-primary', onClick: startPayment, disabled: loading, style: {width: '100%'}},
+        loading ? '⏳ Redirecting to payment...' : `Pay with Paystack — KES ${plan === 'wellness' ? '500' : '1,200'}/month`
+      ),
+      h('p', {style: {textAlign: 'center', fontSize: '.75rem', color: 'var(--tmu)', marginTop: '.75rem'}},
+        'Cancel anytime. No hidden fees.'
+      )
+    )
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ROOT APP
+═══════════════════════════════════════════════════════════════ */
+function App(){
+  const [user,setUser]=useState(null);
+  const [page,setPage]=useState('home');
+  const [slim,setSlim]=useState(false);
+  const [showUpgrade,setShowUpgrade]=useState(false);
+  const [showAdminLogin,setShowAdminLogin]=useState(false);
+  const [adminUser,setAdminUser]=useState(null);
+  const [booting,setBooting]=useState(true);
+  const toast=useToast();
+
+  useEffect(()=>{
+    const t=sessionStorage.getItem('nia_token');
+    if(t){api.setToken(t);api.get('/auth/me').then(d=>{setUser(d.user);setBooting(false);}).catch(()=>{api.setToken('');setBooting(false);});}
+    else setBooting(false);
+  },[]);
+
+  function logout(){api.setToken('');setUser(null);setAdminUser(null);setPage('home');}
+
+  if(booting)return h('div',{style:{height:'100vh',display:'flex',alignItems:'center',justifyContent:'center',flexDirection:'column',gap:'1rem',background:'var(--wh)'}},h('div',{style:{marginBottom:'.5rem'}},h(NiaLogo,{scale:1.2})),h('div',{className:'spinner spinner-lg'}));
+  if(!user)return h('div',null,h(AuthScreen,{onAuth:u=>{setUser(u);}}),h('style',null,'@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}'));
+  if(adminUser)return h('div',null,h(AdminPanel,{user:adminUser,onExit:()=>setAdminUser(null),toast}),h(Toasts,{toasts:toast.toasts}),
+    showUpgrade&&h(UpgradeModal,{onClose:()=>setShowUpgrade(false),toast,user,onUpgraded:(plan)=>{setUser(u=>({...u,plan}));setShowUpgrade(false);}}));
+
+  // Check if profile complete (has goals)
+  const needsOnboarding=!user.goals?.length;
+
+  const secs=[...new Set(MAIN_NAV.map(n=>n.sec))];
+  const SCREENS={home:h(HomeScreen,{user,setPage,toast}),cycle:h(CycleScreen,{user,toast}),log:h(LogScreen,{toast}),journey:h(JourneyScreen),community:h(CommunityScreen,{user,toast}),chat:h(ChatScreen),meals:h(MealsScreen),movement:h(MovementScreen,{user}),supplements:h(SuppsScreen,{toast}),notifications:h(NotificationsScreen,{toast}),profile:h(ProfileScreen,{user,setUser,toast})};
+  const {data:cycleSnap}=useApi(()=>api.get('/cycle/current'));
+  const score=cycleSnap?.score||0;
+
+  return h('div',null,
+    h('style',null,'@keyframes slideIn{from{transform:translateX(100%);opacity:0;}to{transform:translateX(0);opacity:1;}}'),
+    needsOnboarding&&h(Onboarding,{user,onDone:u=>setUser(u)}),
+    h('div',{className:'layout'},
+      h('div',{className:`sidebar${slim?' slim':''}`},
+        h('div',{className:'sb-top'},
+          h('div',{className:'sb-logo-row'},
+            !slim&&h(NiaLogo,{scale:.85,light:true}),
+            slim&&h('div',{style:{fontSize:'1rem'}},'🌿'),
+            h('button',{className:'sb-collapse-btn',onClick:()=>setSlim(!slim)},slim?'→':'←')
+          )
+        ),
+        h('div',{className:'sb-nav'},
+          secs.map(sec=>h('div',{key:sec},
+            h('div',{className:'sb-section'},sec),
+            MAIN_NAV.filter(n=>n.sec===sec).map(n=>h('div',{key:n.id,className:`sb-item${page===n.id?' active':''}`,onClick:()=>setPage(n.id),title:slim?n.l:''},h('span',{className:'sb-ico'},n.ic),h('span',{className:'sb-lbl'},n.l)))
+          ))
+        ),
+        h('div',{className:'sb-foot'},
+          h('div',{className:'sb-user-row'},
+            h('div',{className:'sb-av'},((user.name||'U').slice(0,2).toUpperCase())),
+            !slim&&h('div',null,h('div',{className:'sb-uname'},user.name||'User'),h('div',{className:'sb-urole'},user.plan||'Free'))
+          ),
+          !slim&&h('button',{style:{marginTop:'.65rem',width:'100%',padding:'6px',background:'rgba(255,255,255,.06)',border:'1px solid rgba(255,255,255,.1)',color:'rgba(255,255,255,.45)',borderRadius:'7px',cursor:'pointer',fontSize:'.72rem'},onClick:logout},'Sign out')
+        )
+      ),
+      h('div',{className:'main'},
+        h(Topbar,{user,score,setPage,showNotifs:false,setShowNotifs:()=>{setPage('notifications');}}),
+        h('div',{className:'content-area'},SCREENS[page]||SCREENS.home),
+        h('footer',null,
+          h('div',{className:'ft-l'},'© 2025 niA Health · Built for women, by women'),
+          h('div',{className:'ft-r'},
+            h('span',{className:'ft-link'},'Privacy'),
+            h('span',{className:'ft-link'},'Terms'),
+            h('span',{className:'ft-link'},'Support'),
+            h('span',{className:'ft-admin',onClick:()=>setShowAdminLogin(true)},'admin')
+          )
+        )
+      )
+    ),
+    h(Toasts,{toasts:toast.toasts}),
+    showAdminLogin&&h(AdminLoginModal,{onClose:()=>setShowAdminLogin(false),onLogin:u=>{setAdminUser(u);setShowAdminLogin(false);}})
+  );
+}
+
+ReactDOM.createRoot(document.getElementById('root')).render(h(App));
+</script>
+</body>
+</html>

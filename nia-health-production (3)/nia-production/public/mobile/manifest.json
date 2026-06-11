@@ -1,0 +1,16 @@
+{
+  "name": "niA Health",
+  "short_name": "niA Health",
+  "description": "Your hormonal wellness companion",
+  "start_url": "/mobile/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FAF9F5",
+  "theme_color": "#2A5A1A",
+  "icons": [
+    { "src": "/mobile/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/mobile/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["health", "lifestyle"],
+  "lang": "en"
+}
